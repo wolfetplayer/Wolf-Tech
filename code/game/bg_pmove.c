@@ -448,7 +448,7 @@ static float PM_CmdScale( usercmd_t *cmd ) {
 	}
 
 	if ( pm->ps->aiChar == AICHAR_ZOMBIE_GHOST ) {
-		scale *= 2.0;
+		scale *= 3.0;
 	}
 
 	if ( pm->ps->aiChar == AICHAR_ELITEGUARD ) {
