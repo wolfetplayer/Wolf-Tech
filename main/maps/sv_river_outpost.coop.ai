@@ -313,8 +313,8 @@ friendly1
 	attributes
 	{
 	attack_crouch 0.0
-	aim_skill 1.0
-	aim_accuracy 1.0
+	aim_skill 0.8
+	aim_accuracy 0.8
 	attack_skill 1.0
 	fov 360
 	}
@@ -376,8 +376,8 @@ friendly2
 	attributes
 	{
 	attack_crouch 0.0
-	aim_skill 1.0
-	aim_accuracy 1.0
+	aim_skill 0.8
+	aim_accuracy 0.8
 	attack_skill 1.0
 	fov 360
 	}
@@ -439,8 +439,8 @@ friendly3
 	attributes
 	{
 	attack_crouch 0.0
-	aim_skill 1.0
-	aim_accuracy 1.0
+	aim_skill 0.8
+	aim_accuracy 0.8
 	attack_skill 1.0
 	fov 360
 	}
@@ -502,8 +502,8 @@ friendly4
 	attributes
 	{
 	attack_crouch 0.0
-	aim_skill 1.0
-	aim_accuracy 1.0
+	aim_skill 0.8
+	aim_accuracy 0.8
 	attack_skill 1.0
 	fov 360
 	}
@@ -565,8 +565,8 @@ friendly5
 	attributes
 	{
 	attack_crouch 0.0
-	aim_skill 1.0
-	aim_accuracy 1.0
+	aim_skill 0.8
+	aim_accuracy 0.8
 	attack_skill 1.0
 	fov 360
 	}
