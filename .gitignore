@@ -53,3 +53,8 @@ unsuccessfulbuild
 code/steamshim/launcher/.vs/
 code/steamshim/launcher/x64/
 code/steamshim/launcher/LaunchRTCW/
+main/maps/sv_river_outpost.autosave.map
+main/maps/sv_river_outpost.bak
+main/maps/sv_river_outpost.bsp
+main/maps/sv_river_outpost.prt
+main/maps/sv_river_outpost.srf
