@@ -1019,6 +1019,54 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		AISTATE_RELAXED
 	},
 
+	//AICHAR_XSHEPHERD
+	{
+		"xshepherd",
+		{
+			360,        // running speed
+			180,        // walking speed
+			180,        // crouching speed
+			180,        // Field of View
+			380,        // Yaw Speed
+			0.0,        // leader
+			0.7,        // aim skill
+			0.7,        // aim accuracy
+			0.75,       // attack skill
+			0.8,        // reaction time
+			0.0,        // attack crouch
+			0.0,        // idle crouch
+			1.0,        // aggression
+			0.0,        // tactical
+			0.0,        // camper
+			32000,      // alertness
+			100,        // starting health
+			1.5,        // hearing scale
+			1.5,        // not in pvs hearing scale
+			2048,       // relaxed detection radius
+			1.0,        // pain threshold multiplier
+		},
+		{
+			"xshepherdSightPlayer",
+			"xshepherdAttackPlayer",
+			"xshepherdOrders",
+			"xshepherdDeath",
+			"xshepherdSilentDeath",	//----(SA)	added
+			"xshepherdFlameDeath",	//----(SA)	added
+			"xshepherdPain",
+			"xshepherdStay",			// stay - you're told to stay put
+			"xshepherdFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+			"xshepherdOrdersDeny",	// deny - refuse orders (doing something else)
+		},
+		AITEAM_NAZI,
+		"xshepherd/default",
+		{WP_VENOM, WP_MONSTER_ATTACK1},	// attack1 is the bite
+		BBOX_SMALL, {32,32},
+		AIFL_FLIP_ANIM | AIFL_STAND_IDLE2 | AIFL_NOLADDER | AIFL_NO_RELOAD,
+		AIFunc_xshepherdbiteStart, 0, 0,
+		NULL,
+		AISTATE_RELAXED
+	},
+
 };
 //---------------------------------------------------------------------------
 
@@ -1544,6 +1592,9 @@ void AIChar_spawn( gentity_t *ent ) {
 	if ( !strcmp( ent->classname, "ai_priest" ) ) {
 		name = "priest";
 	}
+	if ( !strcmp( ent->classname, "ai_xshepherd" ) ) {
+		name = "xshepherd";
+	}
 
 	newent = AICast_CreateCharacter( ent, aiCharDefaults->attributes, &weaponInfo, name, ent->aiSkin, ent->aihSkin, "m", "7", "100" );
 
@@ -1882,6 +1933,23 @@ SP_ai_priest
 */
 void SP_ai_priest( gentity_t *ent ) {
 	AICast_DelayedSpawnCast( ent, AICHAR_PRIEST );
+}
+
+//----------------------------------------------------------------------------------------------------------------------------
+/*QUAKED ai_xshepherd (1 0.25 0) (-32 -32 -24) (32 32 64) TriggerSpawn NoRevive
+x-shepherd entity - fast X-creature "dog" with a lunging bite and a venom spit
+"skin" the .skin file to use for this character (must exist in the player characters directory, otherwise 'xshepherd/default' is used)
+"head" the .skin file to use for his head (must exist in the pc's dir, otherwise 'default' is used)
+"ainame" name of AI
+*/
+
+/*
+============
+SP_ai_xshepherd
+============
+*/
+void SP_ai_xshepherd( gentity_t *ent ) {
+	AICast_DelayedSpawnCast( ent, AICHAR_XSHEPHERD );
 }
 
 //----------------------------------------------------------------------------------------------------------------------------

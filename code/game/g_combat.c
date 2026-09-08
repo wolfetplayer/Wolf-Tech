@@ -101,6 +101,7 @@ void TossClientWeapons( gentity_t *self )
 		case AICHAR_LOPER:
 		case AICHAR_LOPER_SPECIAL:
 		case AICHAR_PRIEST:
+		case AICHAR_XSHEPHERD:
 			return;
 		default:
 			break;

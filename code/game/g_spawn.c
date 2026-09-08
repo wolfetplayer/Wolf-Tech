@@ -334,6 +334,7 @@ void SP_ai_partisan( gentity_t *ent );
 void SP_ai_civilian( gentity_t *ent );
 void SP_ai_trench( gentity_t *ent );
 void SP_ai_priest( gentity_t *ent );
+void SP_ai_xshepherd( gentity_t *ent );
 void SP_ai_loper_special( gentity_t *ent );
 // done.
 
@@ -610,6 +611,7 @@ spawn_t spawns[] = {
 	{"ai_civilian", SP_ai_civilian},
 	{"ai_trench", SP_ai_trench},
 	{"ai_priest", SP_ai_priest},
+	{"ai_xshepherd", SP_ai_xshepherd},
 	{"ai_loper_special", SP_ai_loper_special},
 
 

@@ -4992,14 +4992,24 @@ void CG_Player( centity_t *cent ) {
 	legs.hModel = ci->legsModel;
 	legs.customSkin = ci->legsSkin;
 
-	// the priest model sits off-center over its bbox; nudge it back along its facing
-	if ( cent->currentState.aiChar == AICHAR_PRIEST ) {
-		vec3_t worldOffset;
+	// ported from RealRTCW - the priest / xshepherd models sit off-center over their
+	// bbox; nudge them back along the model's facing
+	{
+		float modelOffsetX = 0.0f;
 
-		VectorScale( legs.axis[0], -20.0f, worldOffset );
-		VectorAdd( cent->lerpOrigin, worldOffset, legs.origin );
-	} else {
-		VectorCopy( cent->lerpOrigin, legs.origin );
+		switch ( cent->currentState.aiChar ) {
+		case AICHAR_PRIEST:     modelOffsetX = -20.0f; break;
+		case AICHAR_XSHEPHERD:  modelOffsetX = -35.0f; break;
+		}
+
+		if ( modelOffsetX != 0.0f ) {
+			vec3_t worldOffset;
+
+			VectorScale( legs.axis[0], modelOffsetX, worldOffset );
+			VectorAdd( cent->lerpOrigin, worldOffset, legs.origin );
+		} else {
+			VectorCopy( cent->lerpOrigin, legs.origin );
+		}
 	}
 
 	if ( ci->playermodelScale[0] != 0 ) {  // player scaled, adjust for the (-24) offset of player legs origin to ground
@@ -5144,6 +5154,7 @@ void CG_Player( centity_t *cent ) {
 				case AICHAR_ZOMBIE_GHOST:
 				case AICHAR_LOPER:
 				case AICHAR_LOPER_SPECIAL:
+				case AICHAR_XSHEPHERD:
 					talk_frame = (int)( (float)talk_frame * 1.2 );
 					closed = qfalse;
 					break;

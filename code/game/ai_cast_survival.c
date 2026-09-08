@@ -104,6 +104,7 @@ void AICast_InitSurvival(void) {
 	svParams.maxActiveAI[AICHAR_HELGA] = survCfg.initialHelgas;
 	svParams.maxActiveAI[AICHAR_HEINRICH] = survCfg.initialHeinrichs;
 	svParams.maxActiveAI[AICHAR_PRIEST] = survCfg.initialPriests;
+	svParams.maxActiveAI[AICHAR_XSHEPHERD] = survCfg.initialXshepherds;
 }
 
 
@@ -376,6 +377,9 @@ void AICast_SetRebirthTimeSurvival(gentity_t *ent, cast_state_t *cs) {
 				break;
 			case AICHAR_PRIEST:
 				baseTime = 20 * 1000;
+				break;
+			case AICHAR_XSHEPHERD:
+				baseTime = 8 * 1000;
 				break;
 			default: // Regular soldiers and zombies
 				baseTime = 5 * 1000;
@@ -715,6 +719,14 @@ void AICast_UpdateMaxActiveAI(void)
             svParams.maxActiveAI[AICHAR_PRIEST] = survCfg.maxPriests;
         }
     }
+
+    // X-Shepherds
+    if (svParams.waveCount >= survCfg.waveXshepherds) {
+        svParams.maxActiveAI[AICHAR_XSHEPHERD] += survCfg.xshepherdsIncrease;
+        if (svParams.maxActiveAI[AICHAR_XSHEPHERD] > survCfg.maxXshepherds) {
+            svParams.maxActiveAI[AICHAR_XSHEPHERD] = survCfg.maxXshepherds;
+        }
+    }
 }
 
 /*
@@ -760,6 +772,9 @@ void AICast_ApplySurvivalAttributes(gentity_t *ent, cast_state_t *cs)
 		break;
 	case AICHAR_PRIEST:
 		waveAppeared = survCfg.wavePriests;
+		break;
+	case AICHAR_XSHEPHERD:
+		waveAppeared = survCfg.waveXshepherds;
 		break;
 	case AICHAR_TRENCH:
 		waveAppeared = survCfg.waveTrench;
@@ -899,6 +914,7 @@ void AICast_ApplySurvivalAttributes(gentity_t *ent, cast_state_t *cs)
 			break;
 
 		case AICHAR_PRIEST:
+		case AICHAR_XSHEPHERD:
 			if (svParams.waveCount < survCfg.growthCurveWaveThreshold)
 			{
 				newHealth = cc->healthBaseEarly + rawSteps * cc->healthPerStep;
@@ -1116,6 +1132,7 @@ void BG_SetBehaviorForSurvival(AICharacters_t characterNum) {
 		case AICHAR_HELGA:
 		case AICHAR_HEINRICH:
 		case AICHAR_PRIEST:
+		case AICHAR_XSHEPHERD:
 			aimSkill     = 1.0f;
 			aimAccuracy  = 1.0f;
 			attackSkill  = 1.0f;

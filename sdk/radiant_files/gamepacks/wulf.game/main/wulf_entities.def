@@ -2032,6 +2032,13 @@ priest entity - tesla-wielding occult caster
 "ainame" name of AI
 */
 
+/*QUAKED ai_xshepherd (1 0.25 0) (-32 -32 -24) (32 32 64) TriggerSpawn NoRevive
+x-shepherd entity - fast X-creature dog with a lunging bite and a venom spit
+"skin" the .skin file to use for this character (must exist in the player characters directory, otherwise 'xshepherd/default' is used)
+"head" the .skin file to use for his head (must exist in the pc's dir, otherwise 'default' is used)
+"ainame" name of AI
+*/
+
 /*QUAKED ai_zombie_surv (1 0.25 0) (-16 -16 -24) (16 16 64) TriggerSpawn NoRevive PortalZombie
 survival zombie entity
 "skin" the .skin file to use for this character (must exist in the player characters directory, otherwise 'zombie/default' is used)

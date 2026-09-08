@@ -39,6 +39,7 @@ If you have questions concerning this license or the applicable additional terms
 
 #define LOPER_GROUND_RANGE              200
 #define BLACKGUARD_MELEE_RANGE          48
+#define XSHEPHERD_MELEE_RANGE           48   // ported from RealRTCW
 #define REJECT_MELEE_RANGE              90  //----(SA)	added
 
 // Zombie Ghost teleport-strike range/delay now come from survCfg.ghostTeleport* (see g_survival.h / g_survival_config.c)

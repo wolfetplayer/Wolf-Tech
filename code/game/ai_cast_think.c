@@ -307,6 +307,10 @@ void AICast_InputToUserCommand( cast_state_t *cs, bot_input_t *bi, usercmd_t *uc
 			ucmd->rightmove = movechar;
 		}
 	}
+	// ported from RealRTCW - AIFL_NOLADDER characters never issue an up/down move (no ladder climb)
+	if ( cs->aiFlags & AIFL_NOLADDER ) {
+		ucmd->upmove = 0;
+	}
 	// prevent WALKFORWARD AI from moving backwards
 	if ( cs->aiFlags & AIFL_WALKFORWARD ) {
 		if ( ucmd->forwardmove < 0 ) {
@@ -644,7 +648,8 @@ void AICast_Think( int client, float thinktime ) {
 	// ported from RealRTCW - holdable_emp temporarily disables certain X-creatures
 	if ( ent->empDisabledUntil > level.time ) {
 		if ( ent->aiCharacter == AICHAR_LOPER || ent->aiCharacter == AICHAR_LOPER_SPECIAL
-			 || ent->aiCharacter == AICHAR_PROTOSOLDIER || ent->aiCharacter == AICHAR_SUPERSOLDIER ) {
+			 || ent->aiCharacter == AICHAR_PROTOSOLDIER || ent->aiCharacter == AICHAR_SUPERSOLDIER
+			 || ent->aiCharacter == AICHAR_XSHEPHERD ) {
 
 			// stop any movement immediately
 			ent->client->ps.pm_time = 0;

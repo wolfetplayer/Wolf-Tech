@@ -38,6 +38,7 @@ wave_helga       10
 wave_heinrich    15
 wave_lopers       5
 wave_priests      6
+wave_xshepherds   4
 
 // ---- Starting active-AI counts (wave 1) ----
 initial_soldiers      5
@@ -56,6 +57,7 @@ initial_lopers        0
 initial_helgas        0
 initial_heinrichs     0
 initial_priests       0
+initial_xshepherds    0
 
 // ---- Per-wave increase / hard cap on active AI ----
 max_soldiers         10
@@ -96,6 +98,9 @@ protos_increase       1
 //
 max_priests           3
 priests_increase      1
+//
+max_xshepherds        4
+xshepherds_increase   1
 
 // ---- Special waves ----
 special_wave_chance          30   // % chance per eligible wave
@@ -203,6 +208,12 @@ priest.health_per_step      16
 priest.health_growth_base  120
 priest.health_growth_rate  1.15
 priest.health_cap          500
+
+xshepherd.health_base_early    80
+xshepherd.health_per_step      14
+xshepherd.health_growth_base   50
+xshepherd.health_growth_rate   1.13
+xshepherd.health_cap          300
 
 zombie.health_base_early     20
 zombie.health_per_step       10

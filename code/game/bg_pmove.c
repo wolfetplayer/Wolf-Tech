@@ -451,6 +451,10 @@ static float PM_CmdScale( usercmd_t *cmd ) {
 		scale *= 3.0;
 	}
 
+	if ( pm->ps->aiChar == AICHAR_XSHEPHERD ) {   // ported from RealRTCW - fast X-creature dog
+		scale *= 1.4;
+	}
+
 	if ( pm->ps->aiChar == AICHAR_ELITEGUARD ) {
 		scale *= 1.2;
 	}
@@ -3941,6 +3945,7 @@ static void PM_Weapon( void ) {
 	// the weapon can overheat, and it's hot
 	if ( ( pm->ps->aiChar != AICHAR_PROTOSOLDIER ) &&
 		 ( pm->ps->aiChar != AICHAR_SUPERSOLDIER ) &&
+		 ( pm->ps->aiChar != AICHAR_XSHEPHERD ) &&
 		 !pm->ps->powerups[PW_VENOM] &&
 		 ( ammoTable[pm->ps->weapon].maxHeat && pm->ps->weapHeat[pm->ps->weapon] ) ) {
 		// it is overheating
@@ -4340,6 +4345,14 @@ void PM_CheckLadderMove( void ) {
 	//if (pm->ps->pm_flags & PM_DEAD)
 	//	return;
 
+	// ported from RealRTCW - the xshepherd is a quadruped, it doesn't climb ladders
+	if ( pm->ps->aiChar == AICHAR_XSHEPHERD ) {
+		pml.ladder = qfalse;
+		pm->ps->pm_flags &= ~PMF_LADDER;
+		ladderforward = qfalse;
+		return;
+	}
+
 	if ( pml.walking ) {
 		tracedist = 1.0;
 	} else {
@@ -4453,6 +4466,11 @@ void PM_LadderMove( void ) {
 	float wishspeed, scale;
 	vec3_t wishdir, wishvel;
 	float upscale;
+
+	// ported from RealRTCW - see PM_CheckLadderMove
+	if ( pm->ps->aiChar == AICHAR_XSHEPHERD ) {
+		return;
+	}
 
 	if ( ladderforward ) {
 		// move towards the ladder

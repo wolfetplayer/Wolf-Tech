@@ -135,6 +135,7 @@ typedef struct survConfig_s
 	int waveLopers;
 	int waveFlamers;
 	int wavePriests;
+	int waveXshepherds;
 
 	int initialSoldiers;
 	int initialTrench;
@@ -149,6 +150,7 @@ typedef struct survConfig_s
 	int initialHelgas;
 	int initialHeinrichs;
 	int initialPriests;
+	int initialXshepherds;
 
 	int maxSoldiers, soldiersIncrease;
 	int maxZombies, zombiesIncrease;
@@ -163,6 +165,7 @@ typedef struct survConfig_s
 	int maxVenoms, venomsIncrease;
 	int maxProtos, protosIncrease;
 	int maxPriests, priestsIncrease;
+	int maxXshepherds, xshepherdsIncrease;
 
 	int specialWaveChance;
 	int specialWaveMinStart;

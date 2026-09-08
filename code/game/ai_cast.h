@@ -96,6 +96,7 @@ If you have questions concerning this license or the applicable additional terms
 #define AIFL_EXPLICIT_ROUTING   0x2000000   // direct routing towards ai_markers, rather than using AAS
 #define AIFL_DISMOUNTING        0x4000000
 #define AIFL_SPECIAL_FUNC       0x8000000   // prevent external interuption of current think func
+#define AIFL_NOLADDER           0x10000000  // ported from RealRTCW - this character can't use ladders (quadrupeds)
 
 //
 // predict events
@@ -670,6 +671,8 @@ char    *AIFunc_LoperAttack3Start( cast_state_t *cs );
 char    *AIFunc_StimSoldierAttack1Start( cast_state_t *cs );
 char    *AIFunc_StimSoldierAttack2Start( cast_state_t *cs );
 char    *AIFunc_BlackGuardAttack1Start( cast_state_t *cs );
+char    *AIFunc_xshepherdbiteStart( cast_state_t *cs );   // ported from RealRTCW
+char    *AIFunc_xshepherdbite( cast_state_t *cs );        // ported from RealRTCW
 char    *AIFunc_RejectAttack1Start( cast_state_t *cs ); //----(SA)
 char    *AIFunc_WarriorZombieMeleeStart( cast_state_t *cs );
 char    *AIFunc_WarriorZombieSightStart( cast_state_t *cs );

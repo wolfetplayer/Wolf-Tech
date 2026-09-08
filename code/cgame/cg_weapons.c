@@ -2475,6 +2475,8 @@ qboolean CG_DrawRealWeapons( centity_t *cent ) {
 	case AICHAR_ZOMBIE_GHOST:
 	case AICHAR_HELGA:      //----(SA)	added	// boss1 is now helga-blob
 	case AICHAR_WARZOMBIE:
+	case AICHAR_PRIEST:     // ported from RealRTCW - fires tesla from a tag, no held model
+	case AICHAR_XSHEPHERD:  // ported from RealRTCW - monster, no held weapon model
 		return qfalse;
 	}
 
@@ -3388,6 +3390,14 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	//if (CG_MonsterUsingWeapon( cent, AICHAR_ZOMBIE, WP_MONSTER_ATTACK1 )) {
 	//	CG_PositionEntityOnTag( &flash, parent, parent->hModel, "tag_head", NULL);
 	//}
+
+	// ported from RealRTCW - monsters emit their weapon FX from the model's tag_weapon
+	if ( CG_MonsterUsingWeapon( cent, AICHAR_PRIEST, WP_TESLA ) ) {
+		CG_PositionEntityOnTag( &flash, parent, "tag_weapon", 0, NULL );
+	}
+	if ( CG_MonsterUsingWeapon( cent, AICHAR_XSHEPHERD, WP_VENOM ) ) {
+		CG_PositionEntityOnTag( &flash, parent, "tag_weapon", 0, NULL );
+	}
 
 	if ( ps || cg.renderingThirdPerson || !isPlayer ) {
 

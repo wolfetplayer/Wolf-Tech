@@ -384,7 +384,8 @@ void UseHoldableItem( gentity_t *ent, int item ) {
 			if ( targ->aiCharacter != AICHAR_LOPER &&
 				 targ->aiCharacter != AICHAR_LOPER_SPECIAL &&
 				 targ->aiCharacter != AICHAR_PROTOSOLDIER &&
-				 targ->aiCharacter != AICHAR_SUPERSOLDIER ) {
+				 targ->aiCharacter != AICHAR_SUPERSOLDIER &&
+				 targ->aiCharacter != AICHAR_XSHEPHERD ) {
 				continue;
 			}
 

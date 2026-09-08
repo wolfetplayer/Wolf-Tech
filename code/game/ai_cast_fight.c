@@ -510,6 +510,9 @@ float AICast_WeaponRange( cast_state_t *cs, int weaponnum ) {
 		case AICHAR_BLACKGUARD:
 			return BLACKGUARD_MELEE_RANGE;
 
+		case AICHAR_XSHEPHERD:   // ported from RealRTCW - lunging bite
+			return XSHEPHERD_MELEE_RANGE;
+
 		case AICHAR_ZOMBIE: // zombie flaming attack
 		case AICHAR_ZOMBIE_FLAME:
 			return ZOMBIE_FLAME_RADIUS - 50;      // get well within range before starting
@@ -554,6 +557,13 @@ float AICast_WeaponRange( cast_state_t *cs, int weaponnum ) {
 		case AICHAR_ZOMBIE_SURV:
 		case AICHAR_ZOMBIE_GHOST:
 			return 44;
+		}
+		break;
+
+	case WP_VENOM:   // ported from RealRTCW - xshepherd only spits venom at close range
+		switch ( cs->aiCharacter ) {
+		case AICHAR_XSHEPHERD:
+			return 500.0f;
 		}
 		break;
 	}
@@ -980,6 +990,12 @@ qboolean AICast_WeaponUsable( cast_state_t *cs, int weaponNum ) {
 		case AICHAR_BLACKGUARD:
 			delay = 5000;
 			if ( dist < 0 || dist > BLACKGUARD_MELEE_RANGE ) {
+				return qfalse;
+			}
+			break;
+		case AICHAR_XSHEPHERD:   // ported from RealRTCW
+			delay = 5000;
+			if ( dist < 0 || dist > XSHEPHERD_MELEE_RANGE ) {
 				return qfalse;
 			}
 			break;
