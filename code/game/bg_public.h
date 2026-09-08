@@ -489,6 +489,7 @@ typedef enum {
 	PW_BATTLESUIT_SURV,
 	PW_VAMPIRE,
 	PW_VENOM,
+	PW_XSHIELD,     // ported from RealRTCW - holdable_xshield: full damage immunity for a short time
 
 	PW_NUM_POWERUPS
 } powerup_t;
@@ -541,7 +542,9 @@ typedef enum {
 	HI_M97,     // not a real holdable pickup - reuses this networked slot for the M97 pump-reload sub-state (m97state_t)
 	HI_AUTO5,   // not a real holdable pickup - reuses this networked slot for the Auto-5 pump-reload sub-state (auto5state_t)
 	HI_ADRENALINE,  // ported from RealRTCW - map pickup, consumed on use: nofatigue + health boost
-	HI_14,
+	HI_CROSS,       // ported from RealRTCW - AoE: ignites and kills nearby undead
+	HI_EMP,         // ported from RealRTCW - AoE: disables nearby X-creatures for a time
+	HI_XSHIELD,     // ported from RealRTCW - grants PW_XSHIELD (brief damage immunity)
 //	HI_15,	// ?
 
 	HI_NUM_HOLDABLE
@@ -926,6 +929,7 @@ typedef enum {
 	EV_POWERUP_BATTLESUIT,
 	EV_POWERUP_BATTLESUIT_SURV,
 	EV_POWERUP_REGEN,
+	EV_POWERUP_XSHIELD,   // ported from RealRTCW - hit landed on a player under PW_XSHIELD
 	EV_GIB_PLAYER,          // gib a previously living player
 	EV_DEBUG_LINE,
 	EV_STOPLOOPINGSOUND,
@@ -976,6 +980,7 @@ typedef enum {
 	EV_POPUP_BOOK,
 	EV_GIVEPAGE,    //----(SA)	added
 	EV_SPAWN_SPIRIT,
+	EV_EMP_WAVE,    // ported from RealRTCW - holdable_emp detonated, spawn the ground shockwave FX
 	EV_PLAYER_DIED, // Why was this never included?
 	EV_QUICKGRENS,
 

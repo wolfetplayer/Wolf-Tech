@@ -490,6 +490,30 @@ model="models/powerups/holdable/paranormal_book.md3"
 model="models/powerups/holdable/zemphr_book.md3"
 */
 
+/*QUAKED holdable_cross (.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
+Tides of War cross - ignites and finishes off nearby undead.
+pickup sound : "sound/pickup/holdable/get_cross.wav"
+use sound : "sound/pickup/holdable/use_cross.wav"
+-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
+model="models/powerups/holdable/cross.md3"
+*/
+
+/*QUAKED holdable_emp (.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
+EMP device - disables nearby X-creatures for a short time.
+pickup sound : "sound/pickup/holdable/get_emp.wav"
+use sound : "sound/pickup/holdable/use_emp.wav"
+-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
+model="models/powerups/holdable/emp.md3"
+*/
+
+/*QUAKED holdable_xshield (.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
+Shield generator - grants brief full damage immunity.
+pickup sound : "sound/pickup/holdable/get_shield.wav"
+use sound : "sound/pickup/holdable/use_shield.wav"
+-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
+model="models/powerups/holdable/shieldgen.md3"
+*/
+
 /*QUAKED key_binocs (1 1 0) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
 Binoculars.
 

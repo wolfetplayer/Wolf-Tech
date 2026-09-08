@@ -508,6 +508,27 @@ static void CG_UseItem( centity_t *cent ) {
 					CG_CenterPrint( "usedadrenaline", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
 #endif
 					break;
+				case HI_CROSS:
+#ifdef LOCALISATION
+					CG_CenterPrint( "You used the cross", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+#else
+					CG_CenterPrint( "usedcross", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+#endif
+					break;
+				case HI_EMP:
+#ifdef LOCALISATION
+					CG_CenterPrint( "You used the EMP device", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+#else
+					CG_CenterPrint( "usedemp", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+#endif
+					break;
+				case HI_XSHIELD:
+#ifdef LOCALISATION
+					CG_CenterPrint( "You used the shield", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+#else
+					CG_CenterPrint( "usedshield", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+#endif
+					break;
 				default:
 					CG_CenterPrint( va( "Use %s", cgs.itemPrintNames[item - bg_itemlist] ), SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
 					break;
@@ -538,6 +559,18 @@ static void CG_UseItem( centity_t *cent ) {
 
 	case HI_ADRENALINE:
 		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.adrenalineSound );
+		break;
+
+	case HI_CROSS:
+		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.crossSound );
+		break;
+
+	case HI_EMP:
+		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.empSound );
+		break;
+
+	case HI_XSHIELD:
+		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.shieldSound );
 		break;
 	}
 }
@@ -2722,6 +2755,13 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		}
 		trap_S_StartSound( NULL, es->number, CHAN_ITEM, trap_S_RegisterSound( "sound/items/regen.wav" ) );
 		break;
+	case EV_POWERUP_XSHIELD:   // ported from RealRTCW
+		DEBUGNAME( "EV_POWERUP_XSHIELD" );
+		if ( es->number == cg.snap->ps.clientNum ) {
+			cg.powerupActive = PW_XSHIELD;
+			cg.powerupTime = cg.time;
+		}
+		break;
 	case EV_LOSE_HAT:
 		DEBUGNAME( "EV_LOSE_HAT" );
 		ByteToDir( es->eventParm, dir );
@@ -2990,6 +3030,10 @@ void CG_EntityEvent( centity_t *cent, vec3_t position ) {
 		break;
 	case EV_SPAWN_SPIRIT:
 		CG_SpawnSpirit( cent );
+		break;
+	case EV_EMP_WAVE:   // ported from RealRTCW
+		DEBUGNAME( "EV_EMP_WAVE" );
+		CG_SpawnEMPWave( cent );
 		break;
 	case EV_DBG_AABB:
 		if ( !cgs.localServer ) {

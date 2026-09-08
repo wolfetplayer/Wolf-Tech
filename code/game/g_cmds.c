@@ -2591,7 +2591,7 @@ void ClientDamage( gentity_t *clent, int entnum, int enemynum, int id ) {
 		break;
 	case CLDMG_FLAMETHROWER:
 
-		if (ent->client && (ent->client->ps.powerups[PW_BATTLESUIT_SURV] ) )
+		if (ent->client && (ent->client->ps.powerups[PW_BATTLESUIT_SURV] || ent->client->ps.powerups[PW_XSHIELD] ) )
 		{
 			break; // Don't apply flamethrower effects
 		}

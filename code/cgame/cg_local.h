@@ -445,7 +445,8 @@ typedef enum {
 	LE_ZOMBIE_BAT,
 	LE_MOVING_TRACER,
 	LE_EMITTER,
-	LE_SPIRIT_VIEWFLASH
+	LE_SPIRIT_VIEWFLASH,
+	LE_EMP_WAVE     // ported from RealRTCW - holdable_emp ground shockwave
 } leType_t;
 
 typedef enum {
@@ -1297,6 +1298,8 @@ typedef struct {
 	// powerup shaders
 	qhandle_t quadShader;
 	qhandle_t redQuadShader;
+	qhandle_t empRingShader;    // ported from RealRTCW - holdable_emp wave
+	qhandle_t empSparkShader;   // ported from RealRTCW - holdable_emp wave
 	qhandle_t quadWeaponShader;
 	qhandle_t invisShader;
 	qhandle_t regenShader;
@@ -1503,6 +1506,10 @@ typedef struct {
 	sfxHandle_t bookSound;      //----(SA)	added
 	sfxHandle_t staminaSound;   //----(SA)	added
 	sfxHandle_t adrenalineSound;
+	sfxHandle_t crossSound;         // ported from RealRTCW
+	sfxHandle_t empSound;           // ported from RealRTCW
+	sfxHandle_t shieldSound;        // ported from RealRTCW
+	sfxHandle_t xshieldLoopSound;   // ported from RealRTCW
 	sfxHandle_t elecSound;
 	sfxHandle_t fireSound;
 	sfxHandle_t waterSound;
@@ -2417,6 +2424,7 @@ void CG_FlameDamage( int owner, vec3_t org, float radius );
 void    CG_InitLocalEntities( void );
 localEntity_t   *CG_AllocLocalEntity( void );
 void    CG_AddLocalEntities( void );
+void    CG_SpawnEMPWave( centity_t *cent );   // ported from RealRTCW
 
 //
 // cg_effects.c

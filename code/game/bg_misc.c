@@ -3996,6 +3996,96 @@ model="models/powerups/holdable/adrenaline.md3"
 		{0,0,0,0}
 	},
 
+/*QUAKED holdable_cross (.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
+Tides of War cross. Ignites and finishes off nearby undead. Consumed on use.
+
+pickup sound : "sound/pickup/holdable/get_cross.wav"
+use sound : "sound/pickup/holdable/use_cross.wav"
+-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
+model="models/powerups/holdable/cross.md3"
+*/
+	{
+		"holdable_cross",
+		"sound/pickup/holdable/get_cross.wav",
+		{
+			"models/powerups/holdable/cross.md3",
+			0, 0, 0,    0
+		},
+		"icons/holycross",              // icon
+		NULL,                           // ammo icon
+		"Holy Cross",                   // pickup
+		1,
+		IT_HOLDABLE,
+		WP_NONE,
+		HI_CROSS,
+		0,
+		0,
+		0,
+		"",                              // precache
+		"sound/pickup/holdable/use_cross.wav",   // sounds
+		{1,0,0,0}
+	},
+
+/*QUAKED holdable_emp (.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
+EMP device. Disables nearby X-creatures for a short time. Consumed on use.
+
+pickup sound : "sound/pickup/holdable/get_emp.wav"
+use sound : "sound/pickup/holdable/use_emp.wav"
+-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
+model="models/powerups/holdable/emp.md3"
+*/
+	{
+		"holdable_emp",
+		"sound/pickup/holdable/get_emp.wav",
+		{
+			"models/powerups/holdable/emp.md3",
+			0, 0, 0,    0
+		},
+		"icons/emp",                    // icon
+		NULL,                           // ammo icon
+		"EMP Device",                   // pickup
+		1,
+		IT_HOLDABLE,
+		WP_NONE,
+		HI_EMP,
+		0,
+		0,
+		0,
+		"",                              // precache
+		"sound/pickup/holdable/use_emp.wav",     // sounds
+		{1,0,0,0}
+	},
+
+/*QUAKED holdable_xshield (.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
+Shield generator. Grants brief full damage immunity. Consumed on use.
+
+pickup sound : "sound/pickup/holdable/get_shield.wav"
+use sound : "sound/pickup/holdable/use_shield.wav"
+-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
+model="models/powerups/holdable/shieldgen.md3"
+*/
+	{
+		"holdable_xshield",
+		"sound/pickup/holdable/get_shield.wav",
+		{
+			"models/powerups/holdable/shieldgen.md3",
+			0, 0, 0,    0
+		},
+		"icons/xshield",                // icon
+		NULL,                           // ammo icon
+		"Shield Generator",             // pickup
+		1,
+		IT_HOLDABLE,
+		WP_NONE,
+		HI_XSHIELD,
+		0,
+		0,
+		0,
+		"",                              // precache
+		"sound/pickup/holdable/use_shield.wav",  // sounds
+		{1,0,0,0}
+	},
+
 
 
 

@@ -2576,6 +2576,18 @@ static void CG_AddWeaponWithPowerups( refEntity_t *gun, int powerups, playerStat
 			}
 		}
 
+		// ported from RealRTCW - blink for xshield powerup (reuses the quad weapon shader)
+		if ( powerups & ( 1 << PW_XSHIELD ) ) {
+			int timeLeft = ps ? ps->powerups[PW_XSHIELD] - cg.time : 5000;
+			if ( ( timeLeft < 5000 ) && ( ( cg.time / 200 ) % 2 ) ) {
+				// skip rendering to blink
+			} else {
+				gun->customShader = cgs.media.quadWeaponShader;
+				CG_AddWeaponRefEntity( gun, ps );
+				gun->customShader = 0;
+			}
+		}
+
 		// blink for vampire powerup
 		if ( powerups & ( 1 << PW_VAMPIRE ) ) {
 			int timeLeft = ps ? ps->powerups[PW_VAMPIRE] - cg.time : 5000;

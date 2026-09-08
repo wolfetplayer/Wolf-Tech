@@ -537,6 +537,27 @@ use sound : "sound/pickup/holdable/use_stamina.wav"
 <flag key="RESPAWN" name="RESPAWN" bit="3"/>
 </point>
 
+<point name="holdable_cross" color=".3 .3 1" box="-8 -8 -8 8 8 8" model="models/powerups/holdable/cross.md3">
+Tides of War cross - ignites and finishes off nearby undead.
+<flag key="SUSPENDED" name="SUSPENDED" bit="0"/>
+<flag key="SPIN" name="SPIN" bit="1"/>
+<flag key="RESPAWN" name="RESPAWN" bit="3"/>
+</point>
+
+<point name="holdable_emp" color=".3 .3 1" box="-8 -8 -8 8 8 8" model="models/powerups/holdable/emp.md3">
+EMP device - disables nearby X-creatures for a short time.
+<flag key="SUSPENDED" name="SUSPENDED" bit="0"/>
+<flag key="SPIN" name="SPIN" bit="1"/>
+<flag key="RESPAWN" name="RESPAWN" bit="3"/>
+</point>
+
+<point name="holdable_xshield" color=".3 .3 1" box="-8 -8 -8 8 8 8" model="models/powerups/holdable/shieldgen.md3">
+Shield generator - grants brief full damage immunity.
+<flag key="SUSPENDED" name="SUSPENDED" bit="0"/>
+<flag key="SPIN" name="SPIN" bit="1"/>
+<flag key="RESPAWN" name="RESPAWN" bit="3"/>
+</point>
+
 <point name="key_binocs" color="1 1 0" box="-8 -8 -8 8 8 8" model="models/powerups/keys/binoculars.md3">
 Binoculars.
 

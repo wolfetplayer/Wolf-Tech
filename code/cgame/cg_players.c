@@ -2982,6 +2982,11 @@ static void CG_PlayerPowerups( centity_t *cent ) {
 //		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.flightSound, 255 );
 //	}
 
+	// ported from RealRTCW - holdable_xshield hums while active
+	if ( powerups & ( 1 << PW_XSHIELD ) ) {
+		CG_S_AddLoopingSound( cent->currentState.number, cent->lerpOrigin, vec3_origin, cgs.media.xshieldLoopSound, 255 );
+	}
+
 	// haste leaves smoke trails
 	if ( powerups & ( 1 << PW_HASTE ) ) {
 		CG_HasteTrail( cent );

@@ -640,6 +640,34 @@ void AICast_Think( int client, float thinktime ) {
 		// no more thinking required
 		return;
 	}
+
+	// ported from RealRTCW - holdable_emp temporarily disables certain X-creatures
+	if ( ent->empDisabledUntil > level.time ) {
+		if ( ent->aiCharacter == AICHAR_LOPER || ent->aiCharacter == AICHAR_LOPER_SPECIAL
+			 || ent->aiCharacter == AICHAR_PROTOSOLDIER || ent->aiCharacter == AICHAR_SUPERSOLDIER ) {
+
+			// stop any movement immediately
+			ent->client->ps.pm_time = 0;
+			ent->client->ps.pm_flags &= ~PMF_TIME_KNOCKBACK;
+			VectorClear( ent->client->ps.velocity );
+
+			// prevent attacking / weapon usage
+			ent->client->ps.weaponTime = 200;
+
+			// cancel "I am attacking" style state bits that can force actions
+			cs->aiFlags &= ~( AIFL_ATTACK_CROUCH | AIFL_SPECIAL_FUNC | AIFL_VIEWLOCKED );
+			cs->actionFlags = 0;
+			cs->attackcrouch_time = 0;
+			cs->lastWeaponFired = 0;
+
+			// drop enemy so they don't immediately resume a charge the frame it ends
+			cs->enemyNum = -1;
+
+			cs->pauseTime = level.time + 250;
+
+			return;
+		}
+	}
 	//
 	// set some anim conditions
 	if ( cs->secondDeadTime ) {

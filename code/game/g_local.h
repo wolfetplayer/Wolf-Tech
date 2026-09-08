@@ -380,6 +380,12 @@ struct gentity_s {
 
 	int flameQuota, flameQuotaTime, flameBurnEnt;
 
+	// ported from RealRTCW - holdable_emp: temporarily disables X-creature AI
+	int empDisabledUntil;
+	int empFxUntil;
+	int empAnimState;
+	int empAnimToken;
+
 	int count2;
 
 	int grenadeExplodeTime;         // we've caught a grenade, which was due to explode at this time

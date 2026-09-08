@@ -1636,6 +1636,12 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		}
 	}
 
+	// ported from RealRTCW - holdable_xshield grants brief full damage immunity
+	if ( client && client->ps.powerups[PW_XSHIELD] ) {
+		G_AddEvent( targ, EV_POWERUP_XSHIELD, 0 );
+		return;
+	}
+
 	if ( !dir ) {
 		dflags |= DAMAGE_NO_KNOCKBACK;
 	} else {
