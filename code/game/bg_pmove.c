@@ -3260,8 +3260,10 @@ static void PM_Weapon( void ) {
 		return;
 	}
 
-	// busy building a func_constructible - holster the weapon (drop/raise), same pattern as revive above
-	if ( pm->ps->stats[STAT_CONSTRUCT_PROGRESS] > 0 ) {
+	// busy with a server-driven action (building a func_constructible now; revive/buy later) - keep the real
+	// weapon holstered while cg_actionview.c shows the pliers. STAT_ACTIVE_ACTION is snapshot-only, same
+	// ~1-frame latency the STAT_CONSTRUCT_PROGRESS gate used to have here.
+	if ( pm->ps->stats[STAT_ACTIVE_ACTION] != ACTION_NONE ) {
 		if ( pm->ps->weaponTime > 0 ) {
 			pm->ps->weaponTime -= pml.msec;
 			if ( pm->ps->weaponTime < 0 ) {
@@ -3272,6 +3274,10 @@ static void PM_Weapon( void ) {
 			pm->ps->weaponstate = WEAPON_HOLSTER_IN;
 			PM_StartWeaponAnim( WEAP_DROP );
 			pm->ps->weaponTime = 250;
+		}
+		// hold the 3rd-person torso on firing_pliers while actively building (not during the lowering tail)
+		if ( pm->ps->stats[STAT_ACTIVE_ACTION] == ACTION_CONSTRUCT ) {
+			BG_AnimScriptEvent( pm->ps, ANIM_ET_BUILD, qtrue, qtrue );
 		}
 		return;
 	}

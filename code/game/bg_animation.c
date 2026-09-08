@@ -126,6 +126,8 @@ static animStringItem_t animEventTypesStr[] =
 	{"PRONE_TO_CROUCH", -1},
 	{"BULLETIMPACT", -1},
 	{"INSPECTSOUND", -1},
+	{"SECONDLIFE", -1},
+	{"BUILD", -1},
 
 	{NULL, -1},
 };
@@ -488,6 +490,33 @@ int BG_IndexForString( char *token, animStringItem_t *strings, qboolean allowFai
 		BG_AnimParseError( "BG_IndexForString: unknown token '%s'", token );
 	}
 	//
+	return -1;
+}
+
+/*
+=================
+BG_AnimationIndexForStringSafe
+
+Like BG_AnimationIndexForString but returns -1 on a miss (or an unready client)
+instead of erroring out. Use where a missing clip has a sane fallback.
+=================
+*/
+int BG_AnimationIndexForStringSafe( char *string, int client ) {
+	int i, hash;
+	animation_t *anim;
+	animModelInfo_t *modelInfo;
+
+	if ( !BG_ValidAnimScript( client ) ) {
+		return -1;
+	}
+	modelInfo = BG_ModelInfoForClient( client );
+	hash = BG_StringHashValue( string );
+
+	for ( i = 0, anim = modelInfo->animations; i < modelInfo->numAnimations; i++, anim++ ) {
+		if ( ( hash == anim->nameHash ) && !Q_stricmp( string, anim->name ) ) {
+			return i;
+		}
+	}
 	return -1;
 }
 

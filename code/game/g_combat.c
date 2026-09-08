@@ -999,6 +999,43 @@ static void G_ConstructDenySound( gentity_t *ent ) {
 
 /*
 ==================
+G_UpdateConstructAction
+
+Drives ps.stats[STAT_ACTIVE_ACTION] for one client: ACTION_CONSTRUCT while a
+build is in progress, then a short ACTION_CONSTRUCT_LOWER tail (PLIERS_LOWER_MS)
+so cg_actionview.c can play the pliers-drop before bg_pmove.c raises the real
+weapon. Death skips the tail -- the pliers just goes with the body.
+==================
+*/
+static void G_UpdateConstructAction( gentity_t *ent, qboolean building ) {
+	int *action = &ent->client->ps.stats[STAT_ACTIVE_ACTION];
+
+	if ( building ) {
+		*action = ACTION_CONSTRUCT;
+		return;
+	}
+
+	switch ( *action ) {
+	case ACTION_CONSTRUCT:
+		if ( ent->health <= 0 ) {
+			*action = ACTION_NONE;
+		} else {
+			*action = ACTION_CONSTRUCT_LOWER;
+			ent->client->actionLowerTime = level.time + PLIERS_LOWER_MS;
+		}
+		break;
+	case ACTION_CONSTRUCT_LOWER:
+		if ( ent->health <= 0 || level.time >= ent->client->actionLowerTime ) {
+			*action = ACTION_NONE;
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+/*
+==================
 G_TickConstructionStates
 
 GT_COOP_SURVIVAL only (caller in G_RunFrame already gates on this, same as
@@ -1035,6 +1072,7 @@ void G_TickConstructionStates( void ) {
 			 ent->client->ps.serverCursorHint != HINT_BUILD ||
 			 ent->client->ps.serverCursorHintVal <= 0 ) {
 			ent->client->ps.stats[STAT_CONSTRUCT_PROGRESS] = 0;
+			G_UpdateConstructAction( ent, qfalse );
 			continue;
 		}
 
@@ -1042,8 +1080,12 @@ void G_TickConstructionStates( void ) {
 		target = &g_entities[ ent->client->ps.serverCursorHintVal - 1 ];
 		if ( !target->inuse || Q_stricmp( target->classname, "func_constructible" ) || target->active ) {
 			ent->client->ps.stats[STAT_CONSTRUCT_PROGRESS] = 0;
+			G_UpdateConstructAction( ent, qfalse );
 			continue;
 		}
+
+		// holding activate on a valid unbuilt target counts as building even while stalled (broke / can't afford a slice)
+		G_UpdateConstructAction( ent, qtrue );
 
 		// broke -- don't let a 0-point player nibble free progress before the gradual charge below catches up
 		if ( target->price > 0 && ent->client->ps.persistant[PERS_SCORE] <= 0 ) {

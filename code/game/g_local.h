@@ -710,6 +710,7 @@ struct gclient_s {
 	int reviveTargetNum;            // clientNum this player is currently reviving, -1 if none
 	int reviveElapsedMs;            // ms elapsed on the current revive attempt (avoids integer-truncation drift in the 0-100 stat)
 	int constructDenySoundTime;      // level.time throttle so the "can't afford it" sound doesn't spam every frame held
+	int actionLowerTime;             // level.time the ACTION_CONSTRUCT_LOWER tail ends and STAT_ACTIVE_ACTION clears to ACTION_NONE
 	int revivedByNum;                // clientNum currently reviving this player, -1 if none
 	int bleedoutAttackerNum;        // entity number to credit/blame if bleed-out expires into a real death
 	int bleedoutMOD;                 // means of death to use if bleed-out expires into a real death

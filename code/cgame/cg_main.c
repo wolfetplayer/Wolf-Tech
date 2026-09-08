@@ -177,6 +177,7 @@ vmCvar_t cg_viewsize;
 vmCvar_t cg_letterbox;
 vmCvar_t cg_drawGun;
 vmCvar_t cg_drawFPGun;
+vmCvar_t cg_actionViewModel;
 vmCvar_t cg_drawGamemodels;
 vmCvar_t cg_cursorHints;
 vmCvar_t cg_hintFadeTime;       //----(SA)	added
@@ -355,6 +356,7 @@ cvarTable_t cvarTable[] = {
 	{&cg_drawGun, "cg_drawGun", "1", CVAR_ARCHIVE},
 	{&cg_drawGamemodels, "cg_drawGamemodels", "1", CVAR_CHEAT},
 	{&cg_drawFPGun, "cg_drawFPGun", "1", CVAR_ARCHIVE},
+	{&cg_actionViewModel, "cg_actionViewModel", "1", CVAR_ARCHIVE},
 	{&cg_gun_frame, "cg_gun_frame", "0", CVAR_TEMP},
 	{&cg_cursorHints, "cg_cursorHints", "1", CVAR_ARCHIVE},
 	{&cg_hintFadeTime, "cg_hintFadeTime", "500", CVAR_ARCHIVE}, //----(SA)	added
@@ -1792,6 +1794,8 @@ static void CG_RegisterGraphics( void ) {
 //		CG_LoadingString( va("   - %d", i) );
 		CG_RegisterWeapon( i );
 	}
+
+	CG_ActionView_Register();
 
 // END
 

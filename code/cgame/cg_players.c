@@ -5608,8 +5608,6 @@ int parts[] = { 34,
 
 //=====================================================================
 
-extern void CG_ClearWeapLerpFrame( clientInfo_t *ci, lerpFrame_t *lf, int animationNumber );
-
 /*
 ===============
 CG_ResetPlayerEntity

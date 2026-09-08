@@ -387,8 +387,20 @@ typedef enum {
 	STAT_REVIVE_TIME,               // ms left in bleed-out before real death; 0 = not downed
 	STAT_REVIVE_PROGRESS,           // 0-100, % complete of a revive this player is performing on someone else
 	STAT_GAMEOVER,                  // GT_COOP_SURVIVAL: non-zero while the post-wipe game-over sequence is active (see gameOverPhase_t)
-	STAT_CONSTRUCT_PROGRESS         // 0-100, % complete of a func_constructible this player is currently building
+	STAT_CONSTRUCT_PROGRESS,        // 0-100, % complete of a func_constructible this player is currently building
+	STAT_ACTIVE_ACTION             // actionType_t: server-driven action holding the real weapon holstered (see cg_actionview.c)
 } statIndex_t;
+
+// server-driven "action" the player is performing with a cosmetic viewmodel instead of their weapon.
+// only ACTION_CONSTRUCT is wired up; revive/buy-perk are future consumers of the same machine.
+typedef enum {
+	ACTION_NONE,
+	ACTION_CONSTRUCT,              // raising pliers + running the use loop
+	ACTION_CONSTRUCT_LOWER,        // server tail: real weapon still holstered while cgame plays the pliers drop
+	NUM_ACTION_TYPES
+} actionType_t;
+
+#define PLIERS_LOWER_MS     250   // server-side tail after a build stops; match to the pliers weapon.cfg DROP duration
 
 
 // player_state->persistant[] indexes
@@ -1842,6 +1854,7 @@ typedef enum
 	ANIM_ET_BULLETIMPACT,
 	ANIM_ET_INSPECTSOUND,
 	ANIM_ET_SECONDLIFE,
+	ANIM_ET_BUILD,                  // held while building a func_constructible (torso -> firing_pliers)
 
 	NUM_ANIM_EVENTTYPES
 } scriptAnimEventTypes_t;
@@ -2060,6 +2073,7 @@ int BG_GetConditionValue( int client, int condition, qboolean checkConversion );
 int BG_GetAnimScriptAnimation( int client, aistateEnum_t state, scriptAnimMoveTypes_t movetype );
 void BG_AnimUpdatePlayerStateConditions( pmove_t *pmove );
 int BG_AnimationIndexForString( char *string, int client );
+int BG_AnimationIndexForStringSafe( char *string, int client );
 animation_t *BG_AnimationForString( char *string, animModelInfo_t *modelInfo );
 animation_t *BG_GetAnimationForIndex( int client, int index );
 int BG_GetAnimScriptEvent( playerState_t *ps, scriptAnimEventTypes_t event );

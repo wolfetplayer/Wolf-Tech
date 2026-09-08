@@ -759,6 +759,35 @@ typedef struct weaponInfo_s {
 } weaponInfo_t;
 
 
+/*
+Action viewmodel (cg_actionview.c): a cosmetic first-person model shown in place
+of the real weapon while the server has ps.stats[STAT_ACTIVE_ACTION] set. Only
+constructibles use it now (the pliers); revive/buy-perk are meant to plug in as
+extra rows later. Not a weapon_t - never selectable, never networked as a weapon.
+*/
+typedef enum {
+	AV_OFF,
+	AV_RAISE_DELAY,     // real weapon still playing WEAP_DROP; hold before showing the pliers
+	AV_RAISING,         // pliers WEAP_RAISE
+	AV_ACTIVE,          // pliers use loop (WEAP_ATTACK1)
+	AV_LOWERING         // pliers WEAP_DROP, then back to AV_OFF
+} actionViewPhase_t;
+
+typedef struct {
+	qboolean     valid;             // models + weapon.cfg registered ok
+	weaponInfo_t weap;              // only weapAnimations[] is used, filled by CG_ParseWeaponConfig
+	qhandle_t    fpModel;           // v_pliers.md3   (first-person, includes the arms)
+	qhandle_t    handsModel;        // v_pliers_hand.md3 (tag_weapon source, not drawn)
+	qhandle_t    tpModel;           // pliers.md3     (third-person, swapped in CG_AddPlayerWeapon)
+	int          firingPliersAnim;  // animgroup index of "firing_pliers": -2 unresolved, -1 absent, >=0 found
+
+	actionViewPhase_t phase;
+	int          phaseStartTime;
+	int          animNumber;        // WEAP_* currently feeding lf
+	lerpFrame_t  lf;
+} cgActionView_t;
+
+
 // each IT_* item has an associated itemInfo_t
 // that constains media references necessary to present the
 // item and its effects
@@ -1778,6 +1807,7 @@ extern cgs_t cgs;
 extern cg_t cg;
 extern centity_t cg_entities[MAX_GENTITIES];
 extern weaponInfo_t cg_weapons[MAX_WEAPONS];
+extern cgActionView_t cgActionView;
 extern itemInfo_t cg_items[MAX_ITEMS];
 extern markPoly_t cg_markPolys[MAX_MARK_POLYS];
 
@@ -1869,6 +1899,7 @@ extern vmCvar_t cg_gunSwaySprintScale;
 extern vmCvar_t cg_gunSwayStrafeAmp;
 extern vmCvar_t cg_drawGun;
 extern vmCvar_t cg_drawFPGun;
+extern vmCvar_t cg_actionViewModel;
 extern vmCvar_t cg_drawGamemodels;
 extern vmCvar_t cg_cursorHints;
 extern vmCvar_t cg_hintFadeTime;            //----(SA)	added
@@ -2313,6 +2344,17 @@ void CG_GrappleTrail( centity_t *ent, const weaponInfo_t *wi );
 void CG_AddViewWeapon( playerState_t *ps );
 void CG_RenderViewWeapon( void );
 void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent );
+
+// shared with cg_actionview.c
+qboolean CG_ParseWeaponConfig( const char *filename, weaponInfo_t *wi, int weaponNum );
+void CG_ClearWeapLerpFrame( weaponInfo_t *wi, lerpFrame_t *lf, int animationNumber );
+void CG_RunWeapLerpFrame( clientInfo_t *ci, weaponInfo_t *wi, lerpFrame_t *lf, int newAnimation, float speedScale );
+
+// cg_actionview.c
+void CG_ActionView_Register( void );
+void CG_ActionView_Update( playerState_t *ps );
+qboolean CG_ActionView_Active( void );
+qboolean CG_EntityIsBuilding( centity_t *cent );
 void CG_DrawWeaponSelect( void );
 void CG_DrawHoldableSelect( void );
 

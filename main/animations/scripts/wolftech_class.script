@@ -1049,6 +1049,14 @@ RAISEWEAPON
 	}
 }
 
+BUILD
+{
+	default
+	{
+		torso firing_pliers
+	}
+}
+
 JUMP
 {
 	weapons sniper, movetype run

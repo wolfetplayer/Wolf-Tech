@@ -1048,7 +1048,7 @@ CG_ParseWeaponConfig
 	read information for weapon animations (first/length/fps)
 ======================
 */
-static qboolean CG_ParseWeaponConfig( const char *filename, weaponInfo_t *wi, int weaponNum ) {
+qboolean CG_ParseWeaponConfig( const char *filename, weaponInfo_t *wi, int weaponNum ) {
 	char        *text_p, *prev;
 	int len;
 	int i;
@@ -2027,7 +2027,7 @@ Sets cg.snap, cg.oldFrame, and cg.backlerp
 cg.time should be between oldFrameTime and frameTime after exit
 ===============
 */
-static void CG_RunWeapLerpFrame( clientInfo_t *ci, weaponInfo_t *wi, lerpFrame_t *lf, int newAnimation, float speedScale ) {
+void CG_RunWeapLerpFrame( clientInfo_t *ci, weaponInfo_t *wi, lerpFrame_t *lf, int newAnimation, float speedScale ) {
 	int f;
 	animation_t *anim;
 
@@ -3006,8 +3006,12 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 		gun.hModel = weapon->weaponModel[W_FP_MODEL];
 	} else {
 		CG_AddProtoWeapons( parent, ps, cent );
+		// swap in the pliers while this player is building (torso is on firing_pliers) instead of their real weapon
+		if ( cg_actionViewModel.integer && cgActionView.valid && cgActionView.tpModel && CG_EntityIsBuilding( cent ) ) {
+			gun.hModel = cgActionView.tpModel;
+		}
 		// skeletal guys use a different third person weapon (for different tag business)
-		if ( cgs.clientinfo[ cent->currentState.clientNum ].isSkeletal && weapon->weaponModel[W_SKTP_MODEL] ) {
+		else if ( cgs.clientinfo[ cent->currentState.clientNum ].isSkeletal && weapon->weaponModel[W_SKTP_MODEL] ) {
 			gun.hModel = weapon->weaponModel[W_SKTP_MODEL];
 		} else {
 			gun.hModel = weapon->weaponModel[W_TP_MODEL];
@@ -3473,6 +3477,46 @@ void CG_AddPlayerFoot( refEntity_t *parent, playerState_t *ps, centity_t *cent )
 
 /*
 ==============
+CG_AddViewActionWeapon
+
+First-person render for the action viewmodel; cg_actionview.c owns the phase
+machine and the lerpframe. Mirrors the real-weapon path: an undrawn hands
+skeleton animates tag_weapon and the visible model hangs off it.
+==============
+*/
+static void CG_AddViewActionWeapon( playerState_t *ps ) {
+	cgActionView_t *av = &cgActionView;
+	refEntity_t hand, gun;
+	vec3_t angles;
+
+	memset( &hand, 0, sizeof( hand ) );
+
+	CG_CalculateWeaponPosition( hand.origin, angles );
+
+	VectorMA( hand.origin, cg_gun_x.value, cg.refdef.viewaxis[0], hand.origin );
+	VectorMA( hand.origin, cg_gun_y.value, cg.refdef.viewaxis[1], hand.origin );
+	VectorMA( hand.origin, cg_gun_z.value, cg.refdef.viewaxis[2], hand.origin );
+
+	AnglesToAxis( angles, hand.axis );
+
+	hand.hModel = av->handsModel;
+	hand.frame = av->lf.frame;
+	hand.oldframe = av->lf.oldFrame;
+	hand.backlerp = av->lf.backlerp;
+	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_MINLIGHT;
+	VectorCopy( hand.origin, hand.lightingOrigin );
+
+	memset( &gun, 0, sizeof( gun ) );
+	gun.hModel = av->fpModel;
+	gun.renderfx = hand.renderfx;
+	VectorCopy( hand.lightingOrigin, gun.lightingOrigin );
+	CG_PositionEntityOnTag( &gun, &hand, "tag_weapon", 0, NULL );
+
+	CG_AddWeaponRefEntity( &gun, ps );
+}
+
+/*
+==============
 CG_AddViewWeapon
 
 Add the weapon, and flash for the player's view
@@ -3493,6 +3537,9 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 	if ( ps->pm_type == PM_INTERMISSION || ps->pm_type == PM_FREEZE ) {
 		return;
 	}
+
+	// keep the action viewmodel phase machine ticking even in views that don't draw it
+	CG_ActionView_Update( ps );
 
 	// no gun if in third person view
 	if ( cg.renderingThirdPerson ) {
@@ -3533,6 +3580,14 @@ void CG_AddViewWeapon( playerState_t *ps ) {
 
 	memset( &hand, 0, sizeof( hand ) );
 	const ammotable_t *wt;
+
+	// server-driven action in progress - draw the cosmetic viewmodel instead of the real weapon
+	if ( CG_ActionView_Active() ) {
+		CG_AddViewActionWeapon( ps );
+		CG_AddPlayerFoot( &hand, ps, &cg.predictedPlayerEntity );
+		cg.predictedPlayerEntity.lastWeaponClientFrame = cg.clientFrame;
+		return;
+	}
 
 	if ( ps->weapon > WP_NONE ) {
 		CG_RegisterWeapon( ps->weapon );
