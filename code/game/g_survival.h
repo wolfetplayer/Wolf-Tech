@@ -62,6 +62,7 @@ void TossClientPowerups(gentity_t *self, gentity_t *attacker);
 gentity_t *SelectSpawnPoint_AI ( gentity_t *player, gentity_t *ent, vec3_t origin, vec3_t angles ) ;
 void AICast_TickSurvivalWave( void );
 void Survival_CheckWipe( void );
+int Survival_CountActivePlayers( void );
 
 // Game-over sequence (all players fallen); see Survival_TickGameOver() in ai_cast_survival.c
 typedef enum
@@ -123,6 +124,9 @@ typedef struct survConfig_s
 	int intermissionTime;
 	int initialKillCountReq;
 	int friendlySpawnTime;
+
+	// % more enemies-alive-at-once and kills-required per connected player beyond the first; 0 = no player-count scaling.
+	int playerScalePerExtraPct;
 
 	int waveEliteGuard;
 	int waveTrench;
@@ -239,6 +243,9 @@ typedef struct svParams_s
 	int waveCount;
 	int waveKillCount;
 	int killCountRequirement;
+
+	int playerCount;          // connected, non-spectator, non-bot clients - snapshotted at wave start
+	float playerCountScale;   // 1.0 + (playerCount-1) * playerScalePerExtraPct/100 - snapshotted at wave start
 
 	int spawnedThisWave;
 	int spawnedThisWaveFriendly;

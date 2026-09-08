@@ -192,7 +192,7 @@ void AIChar_AIScript_AlertEntity_Survival( gentity_t *ent ) {
 	}
 
     
-	   if ( svParams.activeAI[ent->aiCharacter] >= svParams.maxActiveAI[ent->aiCharacter] || !svParams.waveInProgress)  { 
+	   if ( svParams.activeAI[ent->aiCharacter] >= (int)( svParams.maxActiveAI[ent->aiCharacter] * svParams.playerCountScale ) || !svParams.waveInProgress)  {
 		cs->aiFlags |= AIFL_WAITINGTOSPAWN;
 		return;
 	   }
@@ -1299,6 +1299,38 @@ static AICharacters_t AICast_PickSpecialWaveType( void ) {
 
 /*
 ============
+Survival_CountActivePlayers
+  Connected, non-spectator, non-bot clients currently in the match.
+============
+*/
+int Survival_CountActivePlayers( void ) {
+	int i;
+	int count = 0;
+
+	for ( i = 0; i < level.maxclients; i++ ) {
+		gentity_t *cl = &g_entities[i];
+
+		if ( !cl->inuse || !cl->client ) {
+			continue;
+		}
+		if ( cl->client->pers.connected != CON_CONNECTED ) {
+			continue;
+		}
+		if ( cl->client->sess.sessionTeam == TEAM_SPECTATOR ) {
+			continue;
+		}
+		if ( cl->r.svFlags & SVF_BOT ) {
+			continue;
+		}
+
+		count++;
+	}
+
+	return count;
+}
+
+/*
+============
 Survival_CheckWipe
 ============
 */
@@ -1706,6 +1738,12 @@ void AICast_TickSurvivalWave( void ) {
 	wave = svParams.waveCount;
 	killReq = 0;
 
+	svParams.playerCount = Survival_CountActivePlayers();
+	if ( svParams.playerCount < 1 ) {
+		svParams.playerCount = 1;
+	}
+	svParams.playerCountScale = 1.0f + ( svParams.playerCount - 1 ) * ( survCfg.playerScalePerExtraPct / 100.0f );
+
 if ( wave == 1 ) {
 	G_Printf( "Survival: wave 1 before start_survival script\n" );
 	Survival_GameManagerEvent( "start_survival" );
@@ -1715,6 +1753,8 @@ if ( wave == 1 ) {
 } else {
 		killReq = (int)( 0.15f * wave * wave + 3.0f * wave + 10.0f );
 	}
+
+	killReq = (int)( killReq * svParams.playerCountScale );
 
 	svParams.specialWaveActive = qfalse;
 
@@ -1732,7 +1772,8 @@ if ( wave == 1 ) {
 			count = survCfg.specialWaveCountInitial;
 		}
 
-		svParams.killCountRequirement = count;
+		// maxActiveAI stays unscaled - the spawn gate already multiplies every type's cap by playerCountScale, so scaling here too would double it.
+		svParams.killCountRequirement = (int)( count * svParams.playerCountScale );
 
 		svParams.maxActiveAI[svParams.currentSpecialWaveType] =
 			( count < survCfg.specialWaveCountMax ) ? count : survCfg.specialWaveCountMax;

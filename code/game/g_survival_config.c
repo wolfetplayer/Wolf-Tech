@@ -183,6 +183,7 @@ static const survConfigKey_t survConfigKeys[] = {
 	{ "intermission_time",         &survCfg.intermissionTime },
 	{ "initial_killcount_req",     &survCfg.initialKillCountReq },
 	{ "friendly_spawn_time",       &survCfg.friendlySpawnTime },
+	{ "player_scale_per_extra_pct", &survCfg.playerScalePerExtraPct },
 
 	{ "wave_eliteguard",           &survCfg.waveEliteGuard },
 	{ "wave_trench",               &survCfg.waveTrench },

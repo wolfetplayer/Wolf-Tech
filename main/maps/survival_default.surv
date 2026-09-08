@@ -15,6 +15,9 @@ intermission_time       15   // seconds between waves
 initial_killcount_req    5   // kills required to clear wave 1
 friendly_spawn_time     15   // seconds before a dead friendly AI can respawn
 
+// ---- Player-count scaling ----
+player_scale_per_extra_pct   25   // % more kills-required/concurrent-cap per player beyond the first, applied once per wave; 0 = off
+
 // ---- Game over (all players fallen) ----
 // Cycles the view through 3 mapper-placed cameras (info_notnull ents targetnamed gameover_cam1/2/3), holds on cam3, then counts down to map_restart.
 gameover_linger_time      4000   // ms, death-fall/GAME OVER text before cams start
@@ -31,13 +34,13 @@ wave_blackguard   7
 wave_venom        9
 wave_proto        10
 //
-wave_warriors     2
-wave_flamers      4
-//
+wave_warriors     3
+wave_flamers      5
+wave_priests      7
 wave_helga       10
+//
 wave_heinrich    15
 wave_lopers       5
-wave_priests      6
 wave_xshepherds   4
 
 // ---- Starting active-AI counts (wave 1) ----
