@@ -84,6 +84,7 @@
 "Panzerfaust Rockets"
 "MonsterAttack1"
 "1921 Chateau Lafite"
+"Adrenaline"
 "Added Stamina"
 "Venom Tech Manual"
 "Project Book"

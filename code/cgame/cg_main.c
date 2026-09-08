@@ -1331,6 +1331,7 @@ static void CG_RegisterSounds( void ) {
 	cgs.media.wineSound = trap_S_RegisterSound( "sound/pickup/holdable/use_wine.wav" );       //----(SA)	modified
 	cgs.media.bookSound = trap_S_RegisterSound( "sound/pickup/holdable/use_book.wav" );       //----(SA)	added
 	cgs.media.staminaSound = trap_S_RegisterSound( "sound/pickup/holdable/use_stamina.wav" ); //----(SA)	added
+	cgs.media.adrenalineSound = trap_S_RegisterSound( "sound/pickup/holdable/use_adrenaline.wav" );
 	cgs.media.quadSound = trap_S_RegisterSound( "sound/items/damage3.wav" );
 	cgs.media.sfx_ric1 = trap_S_RegisterSound( "sound/weapons/machinegun/ric1.wav" );
 	cgs.media.sfx_ric2 = trap_S_RegisterSound( "sound/weapons/machinegun/ric2.wav" );

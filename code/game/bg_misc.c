@@ -3873,6 +3873,36 @@ model="models/powerups/holdable/wine.md3"
 		{3,0,0,0}
 	},
 
+/*QUAKED holdable_adrenaline (.3 .3 1) (-8 -8 -8) (8 8 8) SUSPENDED SPIN - RESPAWN
+Protection from fatigue plus a health boost. Consumed on use.
+
+pickup sound : "sound/pickup/holdable/get_adrenaline.wav"
+use sound : "sound/pickup/holdable/use_adrenaline.wav"
+-------- MODEL FOR RADIANT ONLY - DO NOT SET THIS AS A KEY --------
+model="models/powerups/holdable/adrenaline.md3"
+*/
+	{
+		"holdable_adrenaline",
+		"sound/pickup/holdable/get_adrenaline.wav",
+		{
+			"models/powerups/holdable/adrenaline.md3",
+			0, 0, 0,    0
+		},
+		"icons/adrenaline",             // icon
+		NULL,                           // ammo icon
+		"Adrenaline",                   // pickup
+		1,
+		IT_HOLDABLE,
+		WP_NONE,
+		HI_ADRENALINE,
+		0,
+		0,
+		0,
+		"",                              // precache
+		"sound/pickup/holdable/use_adrenaline.wav",  // sounds
+		{1,0,0,0}
+	},
+
 	{
 		"holdable_stamina",
 		"sound/pickup/holdable/get_stamina.wav",

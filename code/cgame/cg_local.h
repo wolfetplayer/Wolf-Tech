@@ -1502,6 +1502,7 @@ typedef struct {
 	sfxHandle_t wineSound;
 	sfxHandle_t bookSound;      //----(SA)	added
 	sfxHandle_t staminaSound;   //----(SA)	added
+	sfxHandle_t adrenalineSound;
 	sfxHandle_t elecSound;
 	sfxHandle_t fireSound;
 	sfxHandle_t waterSound;

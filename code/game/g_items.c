@@ -242,6 +242,17 @@ void UseHoldableItem( gentity_t *ent, int item ) {
 		G_AddEvent( ent, EV_POPUP_BOOK, ( item - HI_BOOK1 ) + 1 );
 		break;
 
+	case HI_ADRENALINE:    // Adrenaline 1.0 (ported from RealRTCW) - nofatigue + health, overheals
+		ent->client->ps.powerups[PW_NOFATIGUE] = 10000;
+		ent->health += 100;
+		{
+			int healthCap = ent->client->ps.stats[STAT_MAX_HEALTH] * ( g_gameskill.integer == GSKILL_MAX ? 2.0f : 1.25f );
+			if ( ent->health > healthCap ) {
+				ent->health = healthCap;
+			}
+		}
+		break;
+
 	}
 }
 

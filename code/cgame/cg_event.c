@@ -501,6 +501,13 @@ static void CG_UseItem( centity_t *cent ) {
 					CG_CenterPrint( "drankwine", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
 #endif
 					break;
+				case HI_ADRENALINE:
+#ifdef LOCALISATION
+					CG_CenterPrint( "You used the adrenaline", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+#else
+					CG_CenterPrint( "usedadrenaline", SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
+#endif
+					break;
 				default:
 					CG_CenterPrint( va( "Use %s", cgs.itemPrintNames[item - bg_itemlist] ), SCREEN_HEIGHT - ( SCREEN_HEIGHT * 0.25 ), SMALLCHAR_WIDTH );
 					break;
@@ -527,6 +534,10 @@ static void CG_UseItem( centity_t *cent ) {
 
 	case HI_STAMINA:
 		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.staminaSound );
+		break;
+
+	case HI_ADRENALINE:
+		trap_S_StartSound( NULL, es->number, CHAN_BODY, cgs.media.adrenalineSound );
 		break;
 	}
 }

@@ -499,6 +499,15 @@ use sound : "sound/pickup/holdable/use_wine.wav"
 <flag key="RESPAWN" name="RESPAWN" bit="3"/>
 </point>
 
+<point name="holdable_adrenaline" color=".3 .3 1" box="-8 -8 -8 8 8 8" model="models/powerups/holdable/adrenaline.md3">
+Protection from fatigue plus a health boost. Consumed on use.
+pickup sound : "sound/pickup/holdable/get_adrenaline.wav"
+use sound : "sound/pickup/holdable/use_adrenaline.wav"
+<flag key="SUSPENDED" name="SUSPENDED" bit="0"/>
+<flag key="SPIN" name="SPIN" bit="1"/>
+<flag key="RESPAWN" name="RESPAWN" bit="3"/>
+</point>
+
 <point name="holdable_stamina" color=".3 .3 1" box="-8 -8 -8 8 8 8" model="models/powerups/holdable/stamina.md3">
 Protection from fatigue
 Using the "sprint" key will not fatigue the character
