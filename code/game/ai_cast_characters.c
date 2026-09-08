@@ -1058,7 +1058,7 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 			"xshepherdOrdersDeny",	// deny - refuse orders (doing something else)
 		},
 		AITEAM_NAZI,
-		"xshepherd/default",
+		"xdog/default",
 		{WP_VENOM, WP_MONSTER_ATTACK1},	// attack1 is the bite
 		BBOX_SMALL, {32,32},
 		AIFL_FLIP_ANIM | AIFL_STAND_IDLE2 | AIFL_NOLADDER | AIFL_NO_RELOAD,
