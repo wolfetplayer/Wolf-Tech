@@ -4987,7 +4987,15 @@ void CG_Player( centity_t *cent ) {
 	legs.hModel = ci->legsModel;
 	legs.customSkin = ci->legsSkin;
 
-	VectorCopy( cent->lerpOrigin, legs.origin );
+	// the priest model sits off-center over its bbox; nudge it back along its facing
+	if ( cent->currentState.aiChar == AICHAR_PRIEST ) {
+		vec3_t worldOffset;
+
+		VectorScale( legs.axis[0], -20.0f, worldOffset );
+		VectorAdd( cent->lerpOrigin, worldOffset, legs.origin );
+	} else {
+		VectorCopy( cent->lerpOrigin, legs.origin );
+	}
 
 	if ( ci->playermodelScale[0] != 0 ) {  // player scaled, adjust for the (-24) offset of player legs origin to ground
 		legs.origin[2] -= 24.0f * ( 1.0f - ci->playermodelScale[2] );

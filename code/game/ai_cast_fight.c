@@ -482,6 +482,8 @@ float AICast_WeaponRange( cast_state_t *cs, int weaponnum ) {
 				return TESLA_SUPERSOLDIER_RANGE;
 			}
 			break;
+		case AICHAR_PRIEST:
+			return 450.0f;
 		}
 		break;  // normal Tesla range comes from ammotable
 

@@ -971,6 +971,54 @@ AICharacterDefaults_t aiDefaults[NUM_CHARACTERS] = {
 		AISTATE_RELAXED
 	},
 
+	//AICHAR_PRIEST
+	{
+		"Priest",
+		{
+			170,        // running speed
+			120,        // walking speed
+			90,         // crouching speed
+			180,        // Field of View
+			150,        // Yaw Speed
+			0.0,        // leader
+			0.7,        // aim skill
+			1.0,        // aim accuracy
+			0.9,        // attack skill
+			0.6,        // reaction time
+			0.0,        // attack crouch
+			0.0,        // idle crouch
+			1.0,        // aggression
+			0.0,        // tactical
+			0.0,        // camper
+			16000,      // alertness
+			100,        // starting health
+			1.0,        // hearing scale
+			0.9,        // not in pvs hearing scale
+			512,        // relaxed detection radius
+			2.0,        // pain threshold multiplier
+		},
+		{
+			"priestSightPlayer",
+			"priestAttackPlayer",
+			"priestOrders",
+			"priestDeath",
+			"priestSilentDeath",	//----(SA)	added
+			"priestFlameDeath",	//----(SA)	added
+			"priestPain",
+			"priestStay",			// stay - you're told to stay put
+			"priestFollow",		// follow - go with ordering player ("i'm with you" rather than "yes sir!")
+			"priestOrdersDeny",	// deny - refuse orders (doing something else)
+		},
+		AITEAM_NAZI,
+		"priest/default",
+		{WP_TESLA},
+		BBOX_SMALL, {32,48},
+		AIFL_NO_RELOAD | AIFL_NO_TESLA_DAMAGE,
+		0, 0, 0,
+		"sound/player/occult/idle01.wav",
+		AISTATE_RELAXED
+	},
+
 };
 //---------------------------------------------------------------------------
 
@@ -1493,6 +1541,9 @@ void AIChar_spawn( gentity_t *ent ) {
 	if ( !strcmp( ent->classname, "ai_civilian" ) ) {
 		name = "civilian";
 	}
+	if ( !strcmp( ent->classname, "ai_priest" ) ) {
+		name = "priest";
+	}
 
 	newent = AICast_CreateCharacter( ent, aiCharDefaults->attributes, &weaponInfo, name, ent->aiSkin, ent->aihSkin, "m", "7", "100" );
 
@@ -1814,6 +1865,23 @@ SP_ai_trench
 */
 void SP_ai_trench( gentity_t *ent ) {
 	AICast_DelayedSpawnCast( ent, AICHAR_TRENCH );
+}
+
+//----------------------------------------------------------------------------------------------------------------------------
+/*QUAKED ai_priest (1 0.25 0) (-32 -32 -24) (32 32 64) TriggerSpawn NoRevive
+priest entity
+"skin" the .skin file to use for this character (must exist in the player characters directory, otherwise 'priest/default' is used)
+"head" the .skin file to use for his head (must exist in the pc's dir, otherwise 'default' is used)
+"ainame" name of AI
+*/
+
+/*
+============
+SP_ai_priest
+============
+*/
+void SP_ai_priest( gentity_t *ent ) {
+	AICast_DelayedSpawnCast( ent, AICHAR_PRIEST );
 }
 
 //----------------------------------------------------------------------------------------------------------------------------

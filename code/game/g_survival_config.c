@@ -65,6 +65,7 @@ static const survCharName_t survCharNames[] = {
 	{ "partisan",      AICHAR_PARTISAN },
 	{ "loper",         AICHAR_LOPER },
 	{ "loper_special", AICHAR_LOPER_SPECIAL },
+	{ "priest",        AICHAR_PRIEST },
 };
 #define NUM_SURV_CHAR_NAMES ( sizeof( survCharNames ) / sizeof( survCharNames[0] ) )
 
@@ -192,6 +193,7 @@ static const survConfigKey_t survConfigKeys[] = {
 	{ "wave_heinrich",             &survCfg.waveHeinrich },
 	{ "wave_lopers",               &survCfg.waveLopers },
 	{ "wave_flamers",              &survCfg.waveFlamers },
+	{ "wave_priests",              &survCfg.wavePriests },
 
 	{ "initial_soldiers",          &survCfg.initialSoldiers },
 	{ "initial_trench",            &survCfg.initialTrench },
@@ -205,6 +207,7 @@ static const survConfigKey_t survConfigKeys[] = {
 	{ "initial_lopers",            &survCfg.initialLopers },
 	{ "initial_helgas",            &survCfg.initialHelgas },
 	{ "initial_heinrichs",         &survCfg.initialHeinrichs },
+	{ "initial_priests",           &survCfg.initialPriests },
 
 	{ "max_soldiers",              &survCfg.maxSoldiers },
 	{ "soldiers_increase",         &survCfg.soldiersIncrease },
@@ -230,6 +233,8 @@ static const survConfigKey_t survConfigKeys[] = {
 	{ "venoms_increase",           &survCfg.venomsIncrease },
 	{ "max_protos",                &survCfg.maxProtos },
 	{ "protos_increase",           &survCfg.protosIncrease },
+	{ "max_priests",               &survCfg.maxPriests },
+	{ "priests_increase",          &survCfg.priestsIncrease },
 
 	{ "special_wave_chance",         &survCfg.specialWaveChance },
 	{ "special_wave_min_start",      &survCfg.specialWaveMinStart },
@@ -360,6 +365,7 @@ static void Surv_SetDefaults( void ) {
 	survCfg.waveHeinrich = 15;
 	survCfg.waveLopers = 5;
 	survCfg.waveFlamers = 8;
+	survCfg.wavePriests = 6;
 
 	survCfg.initialSoldiers = 5;
 	survCfg.initialTrench = 0;
@@ -373,6 +379,7 @@ static void Surv_SetDefaults( void ) {
 	survCfg.initialLopers = 0;
 	survCfg.initialHelgas = 0;
 	survCfg.initialHeinrichs = 0;
+	survCfg.initialPriests = 0;
 
 	survCfg.maxSoldiers = 10;      survCfg.soldiersIncrease = 1;
 	survCfg.maxZombies = 20;       survCfg.zombiesIncrease = 1;
@@ -386,6 +393,7 @@ static void Surv_SetDefaults( void ) {
 	survCfg.maxLopers = 3;         survCfg.lopersIncrease = 1;
 	survCfg.maxVenoms = 4;         survCfg.venomsIncrease = 1;
 	survCfg.maxProtos = 2;         survCfg.protosIncrease = 1;
+	survCfg.maxPriests = 3;        survCfg.priestsIncrease = 1;
 
 	survCfg.specialWaveChance = 30;
 	survCfg.specialWaveMinStart = 4;
@@ -444,6 +452,7 @@ static void Surv_SetDefaults( void ) {
 
 	Surv_SetCharCurve( AICHAR_BLACKGUARD, 80, 16,  80, 1.14f, 200,    0,0,0,  0,0,0,  0,0,0 );
 	Surv_SetCharCurve( AICHAR_VENOM,     100, 18, 100, 1.15f, 500,    0,0,0,  0,0,0,  0,0,0 );
+	Surv_SetCharCurve( AICHAR_PRIEST,    120, 16, 120, 1.15f, 500,    0,0,0,  0,0,0,  0,0,0 );
 
 	Surv_SetCharCurve( AICHAR_ZOMBIE_SURV, 20, 10, 20, 1.12f, 200,
 		0.8f, 0.03f, 1.2f,   1.2f, 0.04f, 1.6f,   0.25f, 0.02f, 0.5f );

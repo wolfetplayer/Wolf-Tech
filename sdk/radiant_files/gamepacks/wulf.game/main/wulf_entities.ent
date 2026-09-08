@@ -2118,6 +2118,15 @@ scripted-variant loper entity
 <flag key="NoRevive" name="NoRevive" bit="1"/>
 </point>
 
+<point name="ai_priest" color="1 0.25 0" box="-32 -32 -24 32 32 64">
+priest entity - tesla-wielding occult caster
+"skin" the .skin file to use for this character (must exist in the player characters directory, otherwise 'priest/default' is used)
+"head" the .skin file to use for his head (must exist in the pc's dir, otherwise 'default' is used)
+"ainame" name of AI
+<flag key="TriggerSpawn" name="TriggerSpawn" bit="0"/>
+<flag key="NoRevive" name="NoRevive" bit="1"/>
+</point>
+
 <point name="ai_zombie_surv" color="1 0.25 0" box="-16 -16 -24 16 16 64">
 survival zombie entity
 "skin" the .skin file to use for this character (must exist in the player characters directory, otherwise 'zombie/default' is used)

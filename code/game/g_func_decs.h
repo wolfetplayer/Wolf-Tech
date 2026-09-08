@@ -1666,6 +1666,7 @@ extern void SP_ai_supersoldier ( gentity_t * ent ) ;
 extern void SP_ai_eliteguard ( gentity_t * ent ) ;
 extern void SP_ai_civilian ( gentity_t * ent ) ;
 extern void SP_ai_trench ( gentity_t * ent ) ;
+extern void SP_ai_priest ( gentity_t * ent ) ;
 extern void SP_ai_partisan ( gentity_t * ent ) ;
 extern void SP_ai_boss_heinrich ( gentity_t * ent ) ;
 extern void SP_ai_boss_helga ( gentity_t * ent ) ;

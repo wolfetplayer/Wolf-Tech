@@ -103,6 +103,7 @@ void AICast_InitSurvival(void) {
 	svParams.maxActiveAI[AICHAR_LOPER] = survCfg.initialLopers;
 	svParams.maxActiveAI[AICHAR_HELGA] = survCfg.initialHelgas;
 	svParams.maxActiveAI[AICHAR_HEINRICH] = survCfg.initialHeinrichs;
+	svParams.maxActiveAI[AICHAR_PRIEST] = survCfg.initialPriests;
 }
 
 
@@ -372,6 +373,9 @@ void AICast_SetRebirthTimeSurvival(gentity_t *ent, cast_state_t *cs) {
 				break;
 			case AICHAR_LOPER:
 				baseTime = 5 * 1000;
+				break;
+			case AICHAR_PRIEST:
+				baseTime = 20 * 1000;
 				break;
 			default: // Regular soldiers and zombies
 				baseTime = 5 * 1000;
@@ -703,6 +707,14 @@ void AICast_UpdateMaxActiveAI(void)
             svParams.maxActiveAI[AICHAR_LOPER] = survCfg.maxLopers;
         }
     }
+
+    // Priests
+    if (svParams.waveCount >= survCfg.wavePriests) {
+        svParams.maxActiveAI[AICHAR_PRIEST] += survCfg.priestsIncrease;
+        if (svParams.maxActiveAI[AICHAR_PRIEST] > survCfg.maxPriests) {
+            svParams.maxActiveAI[AICHAR_PRIEST] = survCfg.maxPriests;
+        }
+    }
 }
 
 /*
@@ -745,6 +757,9 @@ void AICast_ApplySurvivalAttributes(gentity_t *ent, cast_state_t *cs)
 		break;
 	case AICHAR_LOPER:
 		waveAppeared = survCfg.waveLopers;
+		break;
+	case AICHAR_PRIEST:
+		waveAppeared = survCfg.wavePriests;
 		break;
 	case AICHAR_TRENCH:
 		waveAppeared = survCfg.waveTrench;
@@ -868,6 +883,22 @@ void AICast_ApplySurvivalAttributes(gentity_t *ent, cast_state_t *cs)
 			break;
 
 		case AICHAR_VENOM:
+			if (svParams.waveCount < survCfg.growthCurveWaveThreshold)
+			{
+				newHealth = cc->healthBaseEarly + rawSteps * cc->healthPerStep;
+			}
+			else
+			{
+				float growth = powf(cc->healthGrowthRate, (float)(rawSteps - growthOffset));
+				newHealth = (int)((cc->healthGrowthBase + growthOffset * cc->healthPerStep) * growth);
+			}
+			if (g_survivalAiHealthCap.integer == 1)
+			{
+			if (newHealth > cc->healthCap) newHealth = cc->healthCap;
+			}
+			break;
+
+		case AICHAR_PRIEST:
 			if (svParams.waveCount < survCfg.growthCurveWaveThreshold)
 			{
 				newHealth = cc->healthBaseEarly + rawSteps * cc->healthPerStep;
@@ -1084,6 +1115,7 @@ void BG_SetBehaviorForSurvival(AICharacters_t characterNum) {
 		case AICHAR_LOPER_SPECIAL:
 		case AICHAR_HELGA:
 		case AICHAR_HEINRICH:
+		case AICHAR_PRIEST:
 			aimSkill     = 1.0f;
 			aimAccuracy  = 1.0f;
 			attackSkill  = 1.0f;

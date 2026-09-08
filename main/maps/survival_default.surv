@@ -37,6 +37,7 @@ wave_flamers      4
 wave_helga       10
 wave_heinrich    15
 wave_lopers       5
+wave_priests      6
 
 // ---- Starting active-AI counts (wave 1) ----
 initial_soldiers      5
@@ -54,6 +55,7 @@ initial_flamers       0
 initial_lopers        0
 initial_helgas        0
 initial_heinrichs     0
+initial_priests       0
 
 // ---- Per-wave increase / hard cap on active AI ----
 max_soldiers         10
@@ -91,6 +93,9 @@ venoms_increase       1
 //
 max_protos            2
 protos_increase       1
+//
+max_priests           3
+priests_increase      1
 
 // ---- Special waves ----
 special_wave_chance          30   // % chance per eligible wave
@@ -192,6 +197,12 @@ venom.health_per_step       18
 venom.health_growth_base   100
 venom.health_growth_rate   1.15
 venom.health_cap           500
+
+priest.health_base_early   120
+priest.health_per_step      16
+priest.health_growth_base  120
+priest.health_growth_rate  1.15
+priest.health_cap          500
 
 zombie.health_base_early     20
 zombie.health_per_step       10
