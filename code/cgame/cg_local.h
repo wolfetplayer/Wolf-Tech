@@ -761,30 +761,36 @@ typedef struct weaponInfo_s {
 
 /*
 Action viewmodel (cg_actionview.c): a cosmetic first-person model shown in place
-of the real weapon while the server has ps.stats[STAT_ACTIVE_ACTION] set. Only
-constructibles use it now (the pliers); revive/buy-perk are meant to plug in as
-extra rows later. Not a weapon_t - never selectable, never networked as a weapon.
+of the real weapon while the server has ps.stats[STAT_ACTIVE_ACTION] set. One row
+per actionType_t - pliers for ACTION_CONSTRUCT, adrenaline for ACTION_BUYPERK.
+Not a weapon_t - never selectable, never networked as a weapon.
 */
 typedef enum {
 	AV_OFF,
-	AV_RAISE_DELAY,     // real weapon still playing WEAP_DROP; hold before showing the pliers
-	AV_RAISING,         // pliers WEAP_RAISE
-	AV_ACTIVE,          // pliers use loop (WEAP_ATTACK1)
-	AV_LOWERING         // pliers WEAP_DROP, then back to AV_OFF
+	AV_RAISE_DELAY,     // real weapon still playing WEAP_DROP; hold before showing the viewmodel
+	AV_RAISING,         // viewmodel raise anim (per-action, see actionViewDefs[])
+	AV_ACTIVE,          // viewmodel use anim - looped for construct, plays once and holds for buy-perk
+	AV_LOWERING         // viewmodel drop anim, then back to AV_OFF
 } actionViewPhase_t;
 
 typedef struct {
 	qboolean     valid;             // models + weapon.cfg registered ok
 	weaponInfo_t weap;              // only weapAnimations[] is used, filled by CG_ParseWeaponConfig
-	qhandle_t    fpModel;           // v_pliers.md3   (first-person, includes the arms)
-	qhandle_t    handsModel;        // v_pliers_hand.md3 (tag_weapon source, not drawn)
-	qhandle_t    tpModel;           // pliers.md3     (third-person, swapped in CG_AddPlayerWeapon)
-	int          firingPliersAnim;  // animgroup index of "firing_pliers": -2 unresolved, -1 absent, >=0 found
+	qhandle_t    fpModel;           // v_*.md3      (first-person, includes the arms)
+	qhandle_t    handsModel;        // v_*_hand.md3 (tag_weapon source, not drawn)
+	qhandle_t    tpModel;           // *.md3        (third-person, swapped in CG_AddPlayerWeapon)
+	int          torsoAnim;         // animgroup index of the 3rd-person clip: -2 unresolved, -1 absent, >=0
+} actionViewModel_t;
+
+typedef struct {
+	actionViewModel_t models[NUM_ACTION_TYPES];   // filled for ACTION_CONSTRUCT and ACTION_BUYPERK
+	qboolean          anyValid;
 
 	actionViewPhase_t phase;
-	int          phaseStartTime;
-	int          animNumber;        // WEAP_* currently feeding lf
-	lerpFrame_t  lf;
+	int               current;      // actionType_t whose model is showing; ACTION_NONE when phase == AV_OFF
+	int               phaseStartTime;
+	int               animNumber;   // WEAP_* currently feeding lf
+	lerpFrame_t       lf;
 } cgActionView_t;
 
 
@@ -2354,7 +2360,7 @@ void CG_RunWeapLerpFrame( clientInfo_t *ci, weaponInfo_t *wi, lerpFrame_t *lf, i
 void CG_ActionView_Register( void );
 void CG_ActionView_Update( playerState_t *ps );
 qboolean CG_ActionView_Active( void );
-qboolean CG_EntityIsBuilding( centity_t *cent );
+qhandle_t CG_ActionView_EntityTpModel( centity_t *cent );
 void CG_DrawWeaponSelect( void );
 void CG_DrawHoldableSelect( void );
 

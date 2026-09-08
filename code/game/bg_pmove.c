@@ -3260,9 +3260,9 @@ static void PM_Weapon( void ) {
 		return;
 	}
 
-	// busy with a server-driven action (building a func_constructible now; revive/buy later) - keep the real
-	// weapon holstered while cg_actionview.c shows the pliers. STAT_ACTIVE_ACTION is snapshot-only, same
-	// ~1-frame latency the STAT_CONSTRUCT_PROGRESS gate used to have here.
+	// busy with a server-driven action (building, buying a perk) - keep the real weapon holstered while
+	// cg_actionview.c shows the action viewmodel. STAT_ACTIVE_ACTION is snapshot-only, same ~1-frame
+	// latency the STAT_CONSTRUCT_PROGRESS gate used to have here.
 	if ( pm->ps->stats[STAT_ACTIVE_ACTION] != ACTION_NONE ) {
 		if ( pm->ps->weaponTime > 0 ) {
 			pm->ps->weaponTime -= pml.msec;
@@ -3275,9 +3275,11 @@ static void PM_Weapon( void ) {
 			PM_StartWeaponAnim( WEAP_DROP );
 			pm->ps->weaponTime = 250;
 		}
-		// hold the 3rd-person torso on firing_pliers while actively building (not during the lowering tail)
+		// hold the 3rd-person torso anim while the action is running (not during the lowering tail)
 		if ( pm->ps->stats[STAT_ACTIVE_ACTION] == ACTION_CONSTRUCT ) {
 			BG_AnimScriptEvent( pm->ps, ANIM_ET_BUILD, qtrue, qtrue );
+		} else if ( pm->ps->stats[STAT_ACTIVE_ACTION] == ACTION_BUYPERK ) {
+			BG_AnimScriptEvent( pm->ps, ANIM_ET_BUYPERK, qtrue, qtrue );
 		}
 		return;
 	}

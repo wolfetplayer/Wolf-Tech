@@ -999,38 +999,96 @@ static void G_ConstructDenySound( gentity_t *ent ) {
 
 /*
 ==================
+G_StartTimedAction
+
+Kicks off a fixed-duration action viewmodel (ACTION_BUYPERK). No-op if the player
+is already busy with another action, or outside survival. G_TickActionStates runs
+the timer down into the shared ACTION_LOWERING tail.
+==================
+*/
+void G_StartTimedAction( gentity_t *ent, int action, int durationMs ) {
+	if ( g_gametype.integer != GT_COOP_SURVIVAL || !ent->client || ent->health <= 0 ) {
+		return;
+	}
+	if ( ent->client->ps.stats[STAT_ACTIVE_ACTION] != ACTION_NONE ) {
+		return;
+	}
+	ent->client->ps.stats[STAT_ACTIVE_ACTION] = action;
+	ent->client->actionEndTime = level.time + durationMs;
+}
+
+/*
+==================
+G_TickActionStates
+
+GT_COOP_SURVIVAL only. Runs the generic parts of the STAT_ACTIVE_ACTION machine
+for every client: the ACTION_BUYPERK timer, the shared ACTION_LOWERING tail, and
+snapping straight to ACTION_NONE on death. ACTION_CONSTRUCT's start/stop is the
+condition-gated job of G_TickConstructionStates.
+==================
+*/
+void G_TickActionStates( void ) {
+	int i;
+	gentity_t *ent;
+
+	for ( i = 0; i < level.maxclients; i++ ) {
+		int *action;
+
+		ent = &g_entities[i];
+		if ( !ent->inuse || !ent->client || ent->client->pers.connected != CON_CONNECTED ) {
+			continue;
+		}
+
+		action = &ent->client->ps.stats[STAT_ACTIVE_ACTION];
+		if ( *action == ACTION_NONE ) {
+			continue;
+		}
+		if ( ent->health <= 0 ) {
+			*action = ACTION_NONE;
+			continue;
+		}
+
+		switch ( *action ) {
+		case ACTION_BUYPERK:
+			if ( level.time >= ent->client->actionEndTime ) {
+				*action = ACTION_LOWERING;
+				ent->client->actionLowerTime = level.time + ACTION_LOWER_MS;
+			}
+			break;
+		case ACTION_LOWERING:
+			if ( level.time >= ent->client->actionLowerTime ) {
+				*action = ACTION_NONE;
+			}
+			break;
+		default:
+			break;   // ACTION_CONSTRUCT: G_TickConstructionStates
+		}
+	}
+}
+
+/*
+==================
 G_UpdateConstructAction
 
-Drives ps.stats[STAT_ACTIVE_ACTION] for one client: ACTION_CONSTRUCT while a
-build is in progress, then a short ACTION_CONSTRUCT_LOWER tail (PLIERS_LOWER_MS)
-so cg_actionview.c can play the pliers-drop before bg_pmove.c raises the real
-weapon. Death skips the tail -- the pliers just goes with the body.
+Drives ps.stats[STAT_ACTIVE_ACTION] for the construct case: ACTION_CONSTRUCT
+while a build is in progress, then the shared ACTION_LOWERING tail once it stops
+so cg_actionview.c can play the pliers-drop before bg_pmove.c raises the weapon.
+Won't stomp an unrelated timed action (buy-perk) that happens to overlap.
 ==================
 */
 static void G_UpdateConstructAction( gentity_t *ent, qboolean building ) {
 	int *action = &ent->client->ps.stats[STAT_ACTIVE_ACTION];
 
 	if ( building ) {
-		*action = ACTION_CONSTRUCT;
+		if ( *action == ACTION_NONE || *action == ACTION_CONSTRUCT || *action == ACTION_LOWERING ) {
+			*action = ACTION_CONSTRUCT;
+		}
 		return;
 	}
 
-	switch ( *action ) {
-	case ACTION_CONSTRUCT:
-		if ( ent->health <= 0 ) {
-			*action = ACTION_NONE;
-		} else {
-			*action = ACTION_CONSTRUCT_LOWER;
-			ent->client->actionLowerTime = level.time + PLIERS_LOWER_MS;
-		}
-		break;
-	case ACTION_CONSTRUCT_LOWER:
-		if ( ent->health <= 0 || level.time >= ent->client->actionLowerTime ) {
-			*action = ACTION_NONE;
-		}
-		break;
-	default:
-		break;
+	if ( *action == ACTION_CONSTRUCT ) {
+		*action = ACTION_LOWERING;
+		ent->client->actionLowerTime = level.time + ACTION_LOWER_MS;
 	}
 }
 

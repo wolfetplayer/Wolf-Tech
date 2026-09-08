@@ -1933,6 +1933,7 @@ void ClientSpawn( gentity_t *ent ) {
 	client->bleedoutMOD = MOD_UNKNOWN;
 	client->bleedoutFallEndTime = 0;
 	client->actionLowerTime = 0;
+	client->actionEndTime = 0;
 	client->ps.stats[STAT_ACTIVE_ACTION] = ACTION_NONE;
 
 	client->airOutTime = level.time + 12000;

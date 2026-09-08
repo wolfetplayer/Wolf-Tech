@@ -391,16 +391,19 @@ typedef enum {
 	STAT_ACTIVE_ACTION             // actionType_t: server-driven action holding the real weapon holstered (see cg_actionview.c)
 } statIndex_t;
 
-// server-driven "action" the player is performing with a cosmetic viewmodel instead of their weapon.
-// only ACTION_CONSTRUCT is wired up; revive/buy-perk are future consumers of the same machine.
+// server-driven "action" the player is performing with a cosmetic viewmodel instead of their weapon
+// (see cg_actionview.c). ACTION_CONSTRUCT is held while building; ACTION_BUYPERK is a fixed-duration
+// one-shot. Both fall through ACTION_LOWERING so the viewmodel drop plays before the weapon comes back.
 typedef enum {
 	ACTION_NONE,
-	ACTION_CONSTRUCT,              // raising pliers + running the use loop
-	ACTION_CONSTRUCT_LOWER,        // server tail: real weapon still holstered while cgame plays the pliers drop
+	ACTION_CONSTRUCT,   // pliers - held while building a func_constructible
+	ACTION_BUYPERK,     // adrenaline - fixed-duration inject on a perk purchase
+	ACTION_LOWERING,    // shared tail: real weapon still holstered while cgame plays the viewmodel drop
 	NUM_ACTION_TYPES
 } actionType_t;
 
-#define PLIERS_LOWER_MS     250   // server-side tail after a build stops; match to the pliers weapon.cfg DROP duration
+#define ACTION_LOWER_MS     250   // shared tail after any action; match to the viewmodel weapon.cfg DROP duration
+#define PERKBUY_ACTION_MS  1400   // how long ACTION_BUYPERK holds before the tail; ~ raise delay + RAISE + inject anim
 
 
 // player_state->persistant[] indexes
@@ -1855,6 +1858,7 @@ typedef enum
 	ANIM_ET_INSPECTSOUND,
 	ANIM_ET_SECONDLIFE,
 	ANIM_ET_BUILD,                  // held while building a func_constructible (torso -> firing_pliers)
+	ANIM_ET_BUYPERK,                // held during a perk-purchase inject (torso -> self_inject)
 
 	NUM_ANIM_EVENTTYPES
 } scriptAnimEventTypes_t;
@@ -2073,7 +2077,7 @@ int BG_GetConditionValue( int client, int condition, qboolean checkConversion );
 int BG_GetAnimScriptAnimation( int client, aistateEnum_t state, scriptAnimMoveTypes_t movetype );
 void BG_AnimUpdatePlayerStateConditions( pmove_t *pmove );
 int BG_AnimationIndexForString( char *string, int client );
-int BG_AnimationIndexForStringSafe( char *string, int client );
+int BG_AnimationIndexForStringSafe( const char *string, int client );
 animation_t *BG_AnimationForString( char *string, animModelInfo_t *modelInfo );
 animation_t *BG_GetAnimationForIndex( int client, int index );
 int BG_GetAnimScriptEvent( playerState_t *ps, scriptAnimEventTypes_t event );

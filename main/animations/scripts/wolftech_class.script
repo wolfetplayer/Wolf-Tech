@@ -1057,6 +1057,17 @@ BUILD
 	}
 }
 
+// held while ACTION_BUYPERK runs (adrenaline inject on a perk purchase). ET's adrenaline clip is
+// "self_inject" - confirm your body animgroup has it (swap the name otherwise), then uncomment.
+// The parser hard-errors on an unknown clip name, so this stays commented until then.
+//BUYPERK
+//{
+//	default
+//	{
+//		torso self_inject
+//	}
+//}
+
 JUMP
 {
 	weapons sniper, movetype run

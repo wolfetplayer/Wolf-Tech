@@ -710,7 +710,8 @@ struct gclient_s {
 	int reviveTargetNum;            // clientNum this player is currently reviving, -1 if none
 	int reviveElapsedMs;            // ms elapsed on the current revive attempt (avoids integer-truncation drift in the 0-100 stat)
 	int constructDenySoundTime;      // level.time throttle so the "can't afford it" sound doesn't spam every frame held
-	int actionLowerTime;             // level.time the ACTION_CONSTRUCT_LOWER tail ends and STAT_ACTIVE_ACTION clears to ACTION_NONE
+	int actionLowerTime;             // level.time the ACTION_LOWERING tail ends and STAT_ACTIVE_ACTION clears to ACTION_NONE
+	int actionEndTime;               // level.time a fixed-duration action (ACTION_BUYPERK) stops and enters the tail
 	int revivedByNum;                // clientNum currently reviving this player, -1 if none
 	int bleedoutAttackerNum;        // entity number to credit/blame if bleed-out expires into a real death
 	int bleedoutMOD;                 // means of death to use if bleed-out expires into a real death
@@ -1103,6 +1104,8 @@ void G_EnterBleedout( gentity_t *self, gentity_t *inflictor, gentity_t *attacker
 void G_ResolveRevive( gentity_t *reviver, gentity_t *target );
 void G_TickReviveStates( void );
 void G_TickConstructionStates( void );
+void G_TickActionStates( void );
+void G_StartTimedAction( gentity_t *ent, int action, int durationMs );
 void AddScore( gentity_t *ent, int score );
 void CalculateRanks( void );
 qboolean SpotWouldTelefrag( gentity_t *spot );

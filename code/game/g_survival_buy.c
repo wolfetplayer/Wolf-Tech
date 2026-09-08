@@ -517,6 +517,7 @@ qboolean Survival_HandleRandomPerkBox(gentity_t *ent, gentity_t *activator, char
 
 				G_AddPredictableEvent(activator, EV_ITEM_PICKUP, perkItem - bg_itemlist);
 				trap_SendServerCommand(-1, "mu_play sound/misc/buy_perk.wav 0\n");
+				G_StartTimedAction(activator, ACTION_BUYPERK, PERKBUY_ACTION_MS);
 				return qtrue;
 			}
 		}
@@ -1010,6 +1011,7 @@ qboolean Survival_HandlePerkPurchase(gentity_t *activator, gitem_t *item, int pr
 
     G_AddPredictableEvent(activator, EV_ITEM_PICKUP, item - bg_itemlist);
     trap_SendServerCommand(-1, "mu_play sound/misc/buy_perk.wav 0\n");
+    G_StartTimedAction(activator, ACTION_BUYPERK, PERKBUY_ACTION_MS);
 
     return qtrue;
 }

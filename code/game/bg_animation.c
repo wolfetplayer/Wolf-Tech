@@ -128,6 +128,7 @@ static animStringItem_t animEventTypesStr[] =
 	{"INSPECTSOUND", -1},
 	{"SECONDLIFE", -1},
 	{"BUILD", -1},
+	{"BUYPERK", -1},
 
 	{NULL, -1},
 };
@@ -501,7 +502,7 @@ Like BG_AnimationIndexForString but returns -1 on a miss (or an unready client)
 instead of erroring out. Use where a missing clip has a sane fallback.
 =================
 */
-int BG_AnimationIndexForStringSafe( char *string, int client ) {
+int BG_AnimationIndexForStringSafe( const char *string, int client ) {
 	int i, hash;
 	animation_t *anim;
 	animModelInfo_t *modelInfo;

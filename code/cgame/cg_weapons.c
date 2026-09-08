@@ -3005,10 +3005,12 @@ void CG_AddPlayerWeapon( refEntity_t *parent, playerState_t *ps, centity_t *cent
 	if ( ps ) {
 		gun.hModel = weapon->weaponModel[W_FP_MODEL];
 	} else {
+		qhandle_t actionTpModel = cg_actionViewModel.integer ? CG_ActionView_EntityTpModel( cent ) : 0;
+
 		CG_AddProtoWeapons( parent, ps, cent );
-		// swap in the pliers while this player is building (torso is on firing_pliers) instead of their real weapon
-		if ( cg_actionViewModel.integer && cgActionView.valid && cgActionView.tpModel && CG_EntityIsBuilding( cent ) ) {
-			gun.hModel = cgActionView.tpModel;
+		// swap in the action viewmodel (pliers/adrenaline) while this player's torso runs its clip
+		if ( actionTpModel ) {
+			gun.hModel = actionTpModel;
 		}
 		// skeletal guys use a different third person weapon (for different tag business)
 		else if ( cgs.clientinfo[ cent->currentState.clientNum ].isSkeletal && weapon->weaponModel[W_SKTP_MODEL] ) {
@@ -3485,9 +3487,13 @@ skeleton animates tag_weapon and the visible model hangs off it.
 ==============
 */
 static void CG_AddViewActionWeapon( playerState_t *ps ) {
-	cgActionView_t *av = &cgActionView;
+	const actionViewModel_t *m = &cgActionView.models[ cgActionView.current ];
 	refEntity_t hand, gun;
 	vec3_t angles;
+
+	if ( cgActionView.current == ACTION_NONE ) {
+		return;
+	}
 
 	memset( &hand, 0, sizeof( hand ) );
 
@@ -3499,15 +3505,15 @@ static void CG_AddViewActionWeapon( playerState_t *ps ) {
 
 	AnglesToAxis( angles, hand.axis );
 
-	hand.hModel = av->handsModel;
-	hand.frame = av->lf.frame;
-	hand.oldframe = av->lf.oldFrame;
-	hand.backlerp = av->lf.backlerp;
+	hand.hModel = m->handsModel;
+	hand.frame = cgActionView.lf.frame;
+	hand.oldframe = cgActionView.lf.oldFrame;
+	hand.backlerp = cgActionView.lf.backlerp;
 	hand.renderfx = RF_DEPTHHACK | RF_FIRST_PERSON | RF_MINLIGHT;
 	VectorCopy( hand.origin, hand.lightingOrigin );
 
 	memset( &gun, 0, sizeof( gun ) );
-	gun.hModel = av->fpModel;
+	gun.hModel = m->fpModel;
 	gun.renderfx = hand.renderfx;
 	VectorCopy( hand.lightingOrigin, gun.lightingOrigin );
 	CG_PositionEntityOnTag( &gun, &hand, "tag_weapon", 0, NULL );

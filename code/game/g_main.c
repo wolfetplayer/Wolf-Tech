@@ -3012,6 +3012,7 @@ void G_RunFrame( int levelTime ) {
 		AICast_TickSurvivalWave();
 		Survival_CheckWipe();
 		G_TickReviveStates();
+		G_TickActionStates();
 		G_TickConstructionStates();
 	}
 
