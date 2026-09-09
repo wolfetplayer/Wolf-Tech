@@ -1727,3 +1727,4 @@ extern void G_MapLandmineExplode ( gentity_t * self ) ;
 extern void Use_MapLandmine ( gentity_t * self , gentity_t * other , gentity_t * activator ) ;
 extern void SP_misc_landmine ( gentity_t * self ) ;
 extern void constructible_use ( gentity_t * ent , gentity_t * other , gentity_t * activator ) ;
+extern void gamemodel_use ( gentity_t * ent , gentity_t * other , gentity_t * activator ) ;

@@ -554,6 +554,23 @@ void SP_misc_model( gentity_t *ent ) {
 }
 
 
+/*
+==================
+gamemodel_use
+
+Show/hide toggle for a targeted misc_gamemodel -- the same link/unlink flip
+func_static and dlight use. Lets a func_invisible_user on a pickup make the prop
+vanish (e.g. an extinguisher "handed" to the player), or a script reveal one.
+==================
+*/
+void gamemodel_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
+	if ( ent->r.linked ) {
+		trap_UnlinkEntity( ent );
+	} else {
+		trap_LinkEntity( ent );
+	}
+}
+
 //----(SA)
 /*QUAKED misc_gamemodel (1 0 0) (-16 -16 -16) (16 16 16) ORIENT_LOD
 md3 placed in the game at runtime (rather than in the bsp)
@@ -562,6 +579,7 @@ md3 placed in the game at runtime (rather than in the bsp)
 "modelscale_vec"	scale multiplier (defaults to 1 1 1, scales each axis as requested)
 "trunk"			diameter of solid core (used for trace visibility and collision (not ai pathing))
 "trunkheight"	height of trunk
+"targetname"	if set, triggering it toggles the model's visibility (link/unlink)
 ORIENT_LOD - if flagged, the entity will yaw towards the player when the LOD switches
 
 "modelscale_vec" - Set scale per-axis.  Overrides "modelscale", so if you have both, the "modelscale" is ignored
@@ -616,6 +634,10 @@ void SP_misc_gamemodel( gentity_t *ent ) {
 
 	}
 	trap_LinkEntity( ent );
+
+	if ( ent->targetname ) {
+		ent->use = gamemodel_use;   // targeted gamemodels can be shown/hidden on trigger
+	}
 
 }
 
