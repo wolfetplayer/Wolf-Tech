@@ -1,0 +1,22 @@
+// WolfTech string overlay for scripts/translation.lang
+// Loaded on top of the master table (see CL_ReloadTranslation), so mod-added
+// strings live here instead of in the id-originated master file.
+// msgid = the exact English string passed to CG_TranslateString / sent via "cp".
+{
+	english		"Building..."
+	french		""
+	german		""
+	italian		""
+	spanish		""
+	hungarian	""
+	dutch		""
+}
+{
+	english		"Construction complete!"
+	french		""
+	german		""
+	italian		""
+	spanish		""
+	hungarian	""
+	dutch		""
+}

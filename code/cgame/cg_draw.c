@@ -3906,7 +3906,11 @@ static void CG_DrawConstructProgress( void ) {
 
 	CG_FilledBar( centerX - barW / 2, 400, barW, 14, color, NULL, bgColor, frac, BAR_BG );
 
+#ifdef LOCALISATION
+	s = CG_TranslateString( "Building..." );   // msgid lives in translations/wolftech.lang
+#else
 	s = "Building...";
+#endif
 	w = CG_DrawStrlen( s ) * SMALLCHAR_WIDTH;
 	CG_DrawSmallStringColor( centerX - w / 2, 384, s, colorWhite );
 }
