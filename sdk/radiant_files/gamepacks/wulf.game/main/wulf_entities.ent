@@ -2097,6 +2097,16 @@ Once triggered, this entity is destroyed
 <flag key="AI_Touch" name="AI_Touch" bit="0"/>
 </group>
 
+<group name="trigger_exfil" color=".5 .5 .5">
+GT_COOP_SURVIVAL extraction zone. While the zone is held, an extraction countdown runs and is shown to everyone; if the hold is lost the countdown aborts and resets. When it reaches zero the players still inside are the survivors, the match ends on the shared end-game camera sequence ("Successful Exfil!"), and the map restarts.
+
+By default one live, non-spectator player is enough to hold the zone - teammates left outside simply aren't counted as survivors. Reuses the gameover_cam1/2/3 entities and the gameover_* .surv timings; the music track is the "exfil_music" .surv key.
+
+"wait" : extraction countdown in seconds (default 20). With several exfil brushes, the first one entered sets the length (and the ALLPLAYERS behavior).
+<flag key="START_OFF" name="START_OFF" bit="0"/>
+<flag key="ALLPLAYERS" name="ALLPLAYERS" bit="1"/>
+</group>
+
 <group name="trigger_deathCheck" color=".5 .5 .5">
 GIBFLAG entity will never fire its target(s) if aiName entity was gibbed
 aiName entity making alertentity call

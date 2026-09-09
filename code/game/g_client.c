@@ -1932,6 +1932,7 @@ void ClientSpawn( gentity_t *ent ) {
 	client->bleedoutAttackerNum = ENTITYNUM_WORLD;
 	client->bleedoutMOD = MOD_UNKNOWN;
 	client->bleedoutFallEndTime = 0;
+	client->exfilZoneTime = 0;
 	client->actionLowerTime = 0;
 	client->actionEndTime = 0;
 	client->ps.stats[STAT_ACTIVE_ACTION] = ACTION_NONE;

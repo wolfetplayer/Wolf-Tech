@@ -27,6 +27,10 @@ gameover_fade_time         600   // ms, screen fade to/from black - runs once in
 gameover_countdown           5   // seconds counted down on cam3 before restart
 gameover_music   sound/music/survival_game_over   // empty value = no music
 
+// ---- Exfil (trigger_exfil) ----
+// Reuses the camera sequence and gameover_* timings above; only the banner and this track differ. Countdown length is the trigger_exfil "wait" key.
+exfil_music      sound/music/survival_game_over   // empty value = no music
+
 // ---- Wave each enemy type first appears on ----
 wave_eliteguard   3
 wave_trench       5

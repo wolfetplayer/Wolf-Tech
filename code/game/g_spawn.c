@@ -238,6 +238,7 @@ void SP_trigger_hurt( gentity_t *ent );
 
 //---- (SA) Wolf triggers
 void SP_trigger_once( gentity_t *ent );
+void SP_trigger_exfil( gentity_t *self );
 //---- done
 
 void SP_target_remove_powerups( gentity_t *ent );
@@ -494,6 +495,7 @@ spawn_t spawns[] = {
 
 	//---- (SA) Wolf triggers
 	{"trigger_once",     SP_trigger_once},
+	{"trigger_exfil",    SP_trigger_exfil},
 	//---- done
 
 	// Rafael

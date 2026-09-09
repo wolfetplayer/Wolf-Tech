@@ -3011,6 +3011,7 @@ void G_RunFrame( int levelTime ) {
 	if (g_gametype.integer == GT_COOP_SURVIVAL)
 	{
 		AICast_TickSurvivalWave();
+		Survival_TickExfil();
 		Survival_CheckWipe();
 		G_TickReviveStates();
 		G_TickActionStates();

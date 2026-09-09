@@ -716,6 +716,7 @@ struct gclient_s {
 	int bleedoutAttackerNum;        // entity number to credit/blame if bleed-out expires into a real death
 	int bleedoutMOD;                 // means of death to use if bleed-out expires into a real death
 	int bleedoutFallEndTime;        // when the falling-down anim finishes and we should settle into wounded_idle_1; 0 once handled
+	int exfilZoneTime;              // GT_COOP_SURVIVAL: level.time this client last stood in a trigger_exfil brush, 0 = never
 };
 
 

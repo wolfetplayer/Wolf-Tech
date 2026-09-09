@@ -447,6 +447,8 @@ static void Surv_SetDefaults( void ) {
 	survCfg.gameoverFadeTime = 600;
 	survCfg.gameoverCountdown = 5;
 	Q_strncpyz( survCfg.gameoverMusic, "sound/music/s_longout", sizeof( survCfg.gameoverMusic ) );
+	// same track as the wipe by default - swap it via the "exfil_music" key once a dedicated one exists
+	Q_strncpyz( survCfg.exfilMusic, "sound/music/s_longout", sizeof( survCfg.exfilMusic ) );
 
 	Com_Memset( survCfg.charCurve, 0, sizeof( survCfg.charCurve ) );
 
@@ -658,6 +660,11 @@ static void Surv_ParseBuffer( char *data, const char *sourceForLog ) {
 
 		if ( !Q_stricmp( keybuf, "gameover_music" ) ) {
 			Q_strncpyz( survCfg.gameoverMusic, tok, sizeof( survCfg.gameoverMusic ) );
+			continue;
+		}
+
+		if ( !Q_stricmp( keybuf, "exfil_music" ) ) {
+			Q_strncpyz( survCfg.exfilMusic, tok, sizeof( survCfg.exfilMusic ) );
 			continue;
 		}
 

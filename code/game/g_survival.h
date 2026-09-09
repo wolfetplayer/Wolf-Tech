@@ -62,6 +62,7 @@ void TossClientPowerups(gentity_t *self, gentity_t *attacker);
 gentity_t *SelectSpawnPoint_AI ( gentity_t *player, gentity_t *ent, vec3_t origin, vec3_t angles ) ;
 void AICast_TickSurvivalWave( void );
 void Survival_CheckWipe( void );
+void Survival_TickExfil( void );
 int Survival_CountActivePlayers( void );
 
 // Game-over sequence (all players fallen); see Survival_TickGameOver() in ai_cast_survival.c
@@ -74,6 +75,14 @@ typedef enum
 	GAMEOVER_PHASE_CAM3,     // holds here; restart countdown ticks on this angle
 	GAMEOVER_PHASE_RESTART   // countdown hit 0, map_restart fired - latch so we don't refire
 } gameOverPhase_t;
+
+// Which flavor of the shared end-of-match sequence (Survival_TickGameOver) is playing.
+typedef enum
+{
+	ENDING_NONE,
+	ENDING_WIPE,     // all players fell - "GAME OVER"
+	ENDING_EXFIL     // extraction countdown completed - "Successful Exfil!"
+} endingType_t;
 
 void Survival_TickGameOver( void );
 
@@ -225,6 +234,7 @@ typedef struct survConfig_s
 	int gameoverFadeTime;          // ms, screen fade to/from black on each camera cut
 	int gameoverCountdown;         // seconds counted down on cam3 before map_restart
 	char gameoverMusic[MAX_QPATH]; // mu_play track on wipe; empty = no music
+	char exfilMusic[MAX_QPATH];    // mu_play track on a successful extraction (trigger_exfil); empty = no music
 } survConfig_t;
 
 extern survConfig_t survCfg;
@@ -262,6 +272,18 @@ typedef struct svParams_s
 	int currentSpecialWaveType;                    // AICharacters_t featured in the active special wave
 
 	qboolean waveGameOver;              // all players died mid-wave, game over triggered
+
+	// trigger_exfil extraction, see Survival_TickExfil(). endingType selects the text/music the
+	// shared game-over sequence plays; every other part of that sequence is common to both paths.
+	endingType_t endingType;
+	qboolean exfilActive;              // extraction countdown currently running
+	qboolean exfilRequireAll;          // triggering brush had the ALLPLAYERS spawnflag - every active player must be in a zone
+	int exfilStartTime;                // level.time the countdown began
+	int exfilDuration;                 // ms, taken from the triggering brush's "wait" key
+	int exfilCountdownShown;           // last whole-second centerprinted during the countdown, -1 = none yet
+	int exfilWaitShown;                // last in-zone count we printed an ALLPLAYERS "waiting" message for, -1 = none
+	int exfilPlayersInZone;            // players holding a zone as of the last tick
+	char exfilBanner[768];             // "Successful Exfil! / Survived: ..." text, built once on completion
 
 	// Game-over sequence state, see gameOverPhase_t and Survival_TickGameOver().
 	gameOverPhase_t gameOverPhase;

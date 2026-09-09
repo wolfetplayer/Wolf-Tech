@@ -669,6 +669,105 @@ void SP_trigger_once( gentity_t *ent ) {
 
 //---- end
 
+
+/*
+==============================================================================
+
+trigger_exfil
+
+==============================================================================
+*/
+
+#define EXFIL_START_OFF   1
+#define EXFIL_ALLPLAYERS  2
+
+/*
+==============
+Touch_exfil
+	Stamps the toucher so Survival_TickExfil() can see who is holding the zone
+	this frame. G_TouchTriggers already filters out dead clients.
+==============
+*/
+void Touch_exfil( gentity_t *self, gentity_t *other, trace_t *trace ) {
+	float secs;
+
+	if ( g_gametype.integer != GT_COOP_SURVIVAL ) {
+		return;
+	}
+	if ( !other->client ) {
+		return;
+	}
+	// AI casts ride client slots in survival - real players only
+	if ( ( other->r.svFlags & SVF_CASTAI ) || other->aiCharacter ) {
+		return;
+	}
+	if ( other->client->sess.sessionTeam == TEAM_SPECTATOR ) {
+		return;
+	}
+
+	other->client->exfilZoneTime = level.time;
+
+	// countdown length + ALLPLAYERS come from the first brush entered; locked once it's running
+	if ( !svParams.exfilActive ) {
+		secs = ( self->wait > 0.0f ) ? self->wait : 20.0f;
+		svParams.exfilDuration = (int)( secs * 1000.0f );
+		svParams.exfilRequireAll = ( self->spawnflags & EXFIL_ALLPLAYERS ) ? qtrue : qfalse;
+	}
+}
+
+/*
+==============
+Use_exfil
+	Toggles the zone on/off. START_OFF zones begin unlinked and inert until a
+	target fires this; firing it again takes the zone back down (Survival_TickExfil
+	aborts any running countdown once the zone reads empty).
+==============
+*/
+void Use_exfil( gentity_t *self, gentity_t *other, gentity_t *activator ) {
+	if ( self->touch ) {
+		self->touch = 0;
+		trap_UnlinkEntity( self );
+	} else {
+		self->touch = Touch_exfil;
+		trap_LinkEntity( self );
+	}
+}
+
+/*QUAKED trigger_exfil (.5 .5 .5) ? START_OFF ALLPLAYERS
+GT_COOP_SURVIVAL extraction zone. While the zone is held, an extraction countdown
+runs and is shown to everyone; if the hold is lost the countdown aborts and
+resets. When it reaches zero the players still inside are the survivors, the
+match ends on the shared end-game camera sequence ("Successful Exfil!"), and the
+map restarts.
+
+By default one live, non-spectator player is enough to hold the zone - teammates
+left outside simply aren't counted as survivors.
+
+START_OFF   - zone is absent at spawn; fire it (target its targetname) to raise it,
+              fire again to take it down.
+ALLPLAYERS  - every active player must be inside for the countdown to run; if
+              anyone is missing it waits, and drops a running countdown.
+
+"wait"  extraction countdown in seconds (default 20). With several exfil brushes,
+        the first one entered sets the length (and the ALLPLAYERS behavior).
+*/
+void SP_trigger_exfil( gentity_t *self ) {
+	G_SpawnFloat( "wait", "20", &self->wait );
+
+	self->use = Use_exfil;
+	self->touch = Touch_exfil;
+
+	InitTrigger( self );
+
+	if ( self->spawnflags & EXFIL_START_OFF ) {
+		self->touch = 0;
+		trap_UnlinkEntity( self );
+	} else {
+		trap_LinkEntity( self );
+	}
+}
+
+
 /*QUAKED trigger_deathCheck (.5 .5 .5) ? - GIBFLAG
 GIBFLAG entity will never fire its target(s) if aiName entity was gibbed
 aiName entity making alertentity call
