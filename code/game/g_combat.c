@@ -975,7 +975,7 @@ static void G_CompleteConstructible( gentity_t *ent, gentity_t *activator ) {
 		}
 	}
 
-	trap_SendServerCommand( activator->s.number, "cp \"Construction complete!\n\"" );
+	trap_SendServerCommand( activator->s.number, "cp \"Complete!\n\"" );
 }
 
 #define CONSTRUCT_DENY_SOUND_INTERVAL 1000
