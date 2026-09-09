@@ -151,6 +151,7 @@ speakerScript
 		looped "on"
 		broadcast "no"
 		volume 255
+        targetname "gate_fire_sound"
 		range 200
 	}
 	speakerDef

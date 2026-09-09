@@ -94,6 +94,14 @@ generator1
 	}
 }
 
+gate_fire
+{
+	built
+	{
+		disablespeaker gate_fire_sound
+	}
+}
+
 radio	
 {
 	spawn
