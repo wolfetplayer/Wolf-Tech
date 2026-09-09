@@ -2363,6 +2363,21 @@ void SP_func_door( gentity_t *ent ) {
 
 /*
 ==================
+constructible_use
+
+CONSTRUCTIBLE_START_LOCKED holds a constructible un-buildable until something
+targets it -- e.g. a func_invisible_user sitting on an extinguisher pickup wired
+to the fire's constructible. The unlock is permanent and shared: once any player
+trips the trigger the brush builds for everyone. A constructible that spawned
+unlocked has nothing to do here.
+==================
+*/
+void constructible_use( gentity_t *ent, gentity_t *other, gentity_t *activator ) {
+	ent->spawnflags &= ~CONSTRUCTIBLE_START_LOCKED;
+}
+
+/*
+==================
 SP_func_constructible
 
 A solid brush that players build by holding ACTIVATE against it and watching
@@ -2370,6 +2385,8 @@ a progress bar (see G_TickConstructionStates in g_combat.c). Any class can
 build; PC_ENGINEER builds faster. Never moves -- pos1 == pos2 makes InitMover's
 mover logic a no-op every frame, same trick func_button/func_door rely on for
 their own non-moving edge cases.
+spawnflags: 1 START_BUILT, 2 NOANIM (holster the weapon, skip the pliers anim),
+4 START_LOCKED (unbuildable until a trigger targets it).
 ==================
 */
 void SP_func_constructible( gentity_t *ent ) {
@@ -2377,12 +2394,13 @@ void SP_func_constructible( gentity_t *ent ) {
 	VectorCopy( ent->s.origin, ent->pos2 );
 	trap_SetBrushModel( ent, ent->model );
 	InitMover( ent );
+	ent->use = constructible_use;   // override InitMover's binary-mover use; a locked one unlocks here
 
 	if ( ent->buildTime <= 0 ) {
 		ent->buildTime = 8000;
 	}
 
-	if ( ent->spawnflags & 1 ) {    // START_BUILT
+	if ( ent->spawnflags & CONSTRUCTIBLE_START_BUILT ) {
 		ent->active = qtrue;
 	}
 }

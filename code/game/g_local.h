@@ -1105,6 +1105,11 @@ void G_ResolveRevive( gentity_t *reviver, gentity_t *target );
 void G_TickReviveStates( void );
 void G_TickConstructionStates( void );
 void G_TickActionStates( void );
+
+#define CONSTRUCTIBLE_START_BUILT   1   // func_constructible spawnflags
+#define CONSTRUCTIBLE_NOANIM        2   // holster the weapon but play no pliers / torso build anim
+#define CONSTRUCTIBLE_START_LOCKED  4   // not buildable until targeted (bit cleared for good on first use)
+
 void G_StartTimedAction( gentity_t *ent, int action, int durationMs );
 void AddScore( gentity_t *ent, int score );
 void CalculateRanks( void );

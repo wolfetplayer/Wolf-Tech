@@ -1061,7 +1061,7 @@ void G_TickActionStates( void ) {
 			}
 			break;
 		default:
-			break;   // ACTION_CONSTRUCT: G_TickConstructionStates
+			break;   // ACTION_CONSTRUCT / ACTION_HOLSTER: started and cleared by G_TickConstructionStates
 		}
 	}
 }
@@ -1073,15 +1073,17 @@ G_UpdateConstructAction
 Drives ps.stats[STAT_ACTIVE_ACTION] for the construct case: ACTION_CONSTRUCT
 while a build is in progress, then the shared ACTION_LOWERING tail once it stops
 so cg_actionview.c can play the pliers-drop before bg_pmove.c raises the weapon.
+NOANIM targets get ACTION_HOLSTER instead (weapon down, no viewmodel, no tail).
 Won't stomp an unrelated timed action (buy-perk) that happens to overlap.
 ==================
 */
-static void G_UpdateConstructAction( gentity_t *ent, qboolean building ) {
+static void G_UpdateConstructAction( gentity_t *ent, qboolean building, qboolean noanim ) {
 	int *action = &ent->client->ps.stats[STAT_ACTIVE_ACTION];
 
 	if ( building ) {
-		if ( *action == ACTION_NONE || *action == ACTION_CONSTRUCT || *action == ACTION_LOWERING ) {
-			*action = ACTION_CONSTRUCT;
+		if ( *action == ACTION_NONE || *action == ACTION_CONSTRUCT ||
+			 *action == ACTION_LOWERING || *action == ACTION_HOLSTER ) {
+			*action = noanim ? ACTION_HOLSTER : ACTION_CONSTRUCT;
 		}
 		return;
 	}
@@ -1089,6 +1091,8 @@ static void G_UpdateConstructAction( gentity_t *ent, qboolean building ) {
 	if ( *action == ACTION_CONSTRUCT ) {
 		*action = ACTION_LOWERING;
 		ent->client->actionLowerTime = level.time + ACTION_LOWER_MS;
+	} else if ( *action == ACTION_HOLSTER ) {
+		*action = ACTION_NONE;   // no viewmodel to lower, let the weapon raise right away
 	}
 }
 
@@ -1130,20 +1134,21 @@ void G_TickConstructionStates( void ) {
 			 ent->client->ps.serverCursorHint != HINT_BUILD ||
 			 ent->client->ps.serverCursorHintVal <= 0 ) {
 			ent->client->ps.stats[STAT_CONSTRUCT_PROGRESS] = 0;
-			G_UpdateConstructAction( ent, qfalse );
+			G_UpdateConstructAction( ent, qfalse, qfalse );
 			continue;
 		}
 
 		// re-validated fresh every player's turn to stop two builders double-firing completion in one frame
 		target = &g_entities[ ent->client->ps.serverCursorHintVal - 1 ];
-		if ( !target->inuse || Q_stricmp( target->classname, "func_constructible" ) || target->active ) {
+		if ( !target->inuse || Q_stricmp( target->classname, "func_constructible" ) || target->active ||
+			 ( target->spawnflags & CONSTRUCTIBLE_START_LOCKED ) ) {
 			ent->client->ps.stats[STAT_CONSTRUCT_PROGRESS] = 0;
-			G_UpdateConstructAction( ent, qfalse );
+			G_UpdateConstructAction( ent, qfalse, qfalse );
 			continue;
 		}
 
 		// holding activate on a valid unbuilt target counts as building even while stalled (broke / can't afford a slice)
-		G_UpdateConstructAction( ent, qtrue );
+		G_UpdateConstructAction( ent, qtrue, ( target->spawnflags & CONSTRUCTIBLE_NOANIM ) != 0 );
 
 		// broke -- don't let a 0-point player nibble free progress before the gradual charge below catches up
 		if ( target->price > 0 && ent->client->ps.persistant[PERS_SCORE] <= 0 ) {

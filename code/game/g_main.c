@@ -902,7 +902,8 @@ void G_CheckForCursorHints( gentity_t *ent ) {
 						hintDist = CH_ACTIVATE_DIST;
 						hintType = HINT_BUTTON;
 					}
-					else if (!Q_stricmp(checkEnt->classname, "func_constructible") && !checkEnt->active)
+					else if (!Q_stricmp(checkEnt->classname, "func_constructible") && !checkEnt->active &&
+							 !(checkEnt->spawnflags & CONSTRUCTIBLE_START_LOCKED))
 					{
 						hintDist = CH_ACTIVATE_DIST;
 						hintType = HINT_BUILD;

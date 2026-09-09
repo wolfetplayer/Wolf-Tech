@@ -1981,7 +1981,7 @@ of the trigger to blow up the objective.
 /// WolfTech (Constructibles)
 ///
 
-/*QUAKED func_constructible (0 .5 .8) ? START_BUILT
+/*QUAKED func_constructible (0 .5 .8) ? START_BUILT NOANIM START_LOCKED
 A brush that players build by holding ACTIVATE against it and watching the
 progress bar. Any class can build; engineers build faster (g_engineerBuildRate).
 The brush is unlinked (removed from the world) the moment construction
@@ -1991,11 +1991,18 @@ crate or scaffolding standing in front of whatever it's gating.
 "price"      Survival points cost to fully build, spent gradually. 0/unset = free.
 "buildTime"  Milliseconds to build at normal (non-engineer) speed. Default 8000.
 "target"     Fired via G_UseTargets when construction completes -- point this at a
-             START_DISABLED misc_mg42's targetname to reveal/enable the gun on completion.
-"targetname" So other entities (trigger_objective_info, misc_constructiblemarker) can reference this.
+             START_DISABLED misc_mg42's targetname to reveal/enable the gun on completion,
+             or at a shared targetname on a trigger_hurt / func_static flames / dlight /
+             speaker to put a fire out.
+"targetname" So other entities (trigger_objective_info, misc_constructiblemarker) can
+             reference this. Also what a START_LOCKED constructible listens on to unlock.
 "scriptName" Fires "buildstart" and "built" script events on this name.
 
 START_BUILT -- spawns already fully constructed, skipping the build phase.
+NOANIM -- while building, the player's weapon just lowers; no pliers viewmodel or build anim.
+START_LOCKED -- unbuildable (no build hint, no progress) until something targets it. Wire a
+             func_invisible_user over a pickup prop to this targetname; the first player to
+             use it unlocks the brush for everyone, permanently.
 */
 
 /*QUAKED misc_constructiblemarker (0 .5 .8) (-8 -8 -8) (8 8 8)

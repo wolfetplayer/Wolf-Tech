@@ -1194,6 +1194,21 @@ the default sounds are:
 <flag key="DYNOMITE" name="DYNOMITE" bit="6"/>
 </group>
 
+<group name="func_constructible" color="0 .5 .8">
+A brush that players build by holding ACTIVATE against it and watching the progress bar. Any class can build; engineers build faster (g_engineerBuildRate). The brush is unlinked (removed from the world) the moment construction completes, so it's meant as a temporary placeholder/obstruction.
+"price"      Survival points cost to fully build, spent gradually. 0/unset = free.
+"buildTime"  Milliseconds to build at normal (non-engineer) speed. Default 8000.
+"target"     Fired via G_UseTargets when construction completes (e.g. a shared targetname on a trigger_hurt / func_static flames / dlight / speaker to put a fire out).
+"targetname" So other entities (trigger_objective_info, misc_constructiblemarker) can reference this. Also what a START_LOCKED constructible listens on to unlock.
+"scriptName" Fires "buildstart" and "built" script events on this name.
+START_BUILT - spawns already fully constructed, skipping the build phase.
+NOANIM - while building, the player's weapon just lowers; no pliers viewmodel or build anim.
+START_LOCKED - unbuildable (no build hint, no progress) until something targets it. Wire a func_invisible_user over a pickup prop to this targetname; the first player to use it unlocks the brush for everyone, permanently.
+<flag key="START_BUILT" name="START_BUILT" bit="0"/>
+<flag key="NOANIM" name="NOANIM" bit="1"/>
+<flag key="START_LOCKED" name="START_LOCKED" bit="2"/>
+</group>
+
 <group name="func_invisible_user" color=".3 .5 .8">
 when activated will use its target
 "delay" - time (in seconds) before it can be used again

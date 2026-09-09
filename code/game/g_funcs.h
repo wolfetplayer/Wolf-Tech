@@ -1726,4 +1726,5 @@ If you have questions concerning this license or the applicable additional terms
 {"G_MapLandmineExplode", (byte *)G_MapLandmineExplode},
 {"Use_MapLandmine", (byte *)Use_MapLandmine},
 {"SP_misc_landmine", (byte *)SP_misc_landmine},
+{"constructible_use", (byte *)constructible_use},
 {0, 0}

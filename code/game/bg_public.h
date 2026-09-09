@@ -399,6 +399,7 @@ typedef enum {
 	ACTION_CONSTRUCT,   // pliers - held while building a func_constructible
 	ACTION_BUYPERK,     // adrenaline - fixed-duration inject on a perk purchase
 	ACTION_LOWERING,    // shared tail: real weapon still holstered while cgame plays the viewmodel drop
+	ACTION_HOLSTER,     // weapon held down with no viewmodel and no torso anim (func_constructible NOANIM)
 	NUM_ACTION_TYPES
 } actionType_t;
 

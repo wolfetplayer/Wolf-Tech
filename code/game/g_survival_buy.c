@@ -1225,8 +1225,9 @@ void Touch_objective_info(gentity_t *ent, gentity_t *other, trace_t *trace) {
 		}
 	}
 
-	// Unbuilt and priced: show a price tip instead of falling through to the generic objective line
-	if (constructible && !constructible->active && constructible->price > 0)
+	// Unbuilt, unlocked and priced: show a price tip instead of falling through to the generic objective line
+	if (constructible && !constructible->active && constructible->price > 0 &&
+		!(constructible->spawnflags & CONSTRUCTIBLE_START_LOCKED))
 	{
 		price = constructible->price;
 	}
