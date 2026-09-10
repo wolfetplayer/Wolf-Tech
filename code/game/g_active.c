@@ -1129,6 +1129,19 @@ void ClientThink_real( gentity_t *ent ) {
 		client->ps.pm_type = PM_NORMAL;
 	}
 
+	// survival outro: freeze living exfil survivors on the cameras (wipe victims are PM_DEAD already)
+	if ( g_gametype.integer == GT_COOP_SURVIVAL && client->ps.stats[STAT_GAMEOVER] &&
+		 client->ps.stats[STAT_HEALTH] > 0 ) {
+		ucmd->buttons = 0;
+		ucmd->forwardmove = 0;
+		ucmd->rightmove = 0;
+		ucmd->upmove = 0;
+		ucmd->wbuttons = 0;
+		ucmd->wolfkick = 0;
+		VectorClear( client->ps.velocity );
+		client->ps.pm_type = PM_FREEZE;
+	}
+
 	// set parachute anim condition flag
 	BG_UpdateConditionValue( ent->s.number, ANIM_COND_PARACHUTE, ( ent->flags & FL_PARACHUTE ) != 0, qfalse );
 

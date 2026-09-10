@@ -1610,6 +1610,11 @@ void G_Damage( gentity_t *targ, gentity_t *inflictor, gentity_t *attacker,
 		return;
 	}
 
+	// survival outro: players are frozen on the cameras, ignore stray fire
+	if ( g_gametype.integer == GT_COOP_SURVIVAL && targ->client && svParams.gameOverPhase != GAMEOVER_PHASE_NONE ) {
+		return;
+	}
+
 	// touching a player with a knife unfreezes them
 	if ( targ && targ->client && attacker ) {
 		if ( g_gametype.integer <= GT_COOP && g_freeze.integer == 1 && targ->client->ps.eFlags & EF_FROZEN ) {

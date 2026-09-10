@@ -5104,8 +5104,9 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 			CG_DrawTeamInfo();
 		}
 	} else {
-		// don't draw any status if dead
-		if ( cg.snap->ps.stats[STAT_HEALTH] > 0 ) {
+		// don't draw any status if dead, or during the survival outro
+		if ( cg.snap->ps.stats[STAT_HEALTH] > 0 &&
+			 !( cgs.gametype == GT_COOP_SURVIVAL && cg.snap->ps.stats[STAT_GAMEOVER] ) ) {
 
 			if(stereoFrame == STEREO_CENTER) {
 				CG_DrawCrosshair();
@@ -5145,7 +5146,7 @@ static void CG_Draw2D(stereoFrame_t stereoFrame) {
 			CG_DrawPickupItem();
 			CG_DrawReward();
 		} else if ( cgs.gametype == GT_COOP_SURVIVAL && cg.snap->ps.stats[STAT_GAMEOVER] ) {
-			// post-wipe game-over sequence: force scoreboard + chat on; STAT_HEALTH/STAT_REVIVE_TIME aren't reliable here
+			// wipe or exfil outro: force scoreboard + chat on, no HUD
 			if ( cgs.gametype != GT_SINGLE_PLAYER ) {
 				CG_DrawTeamInfo();
 			}

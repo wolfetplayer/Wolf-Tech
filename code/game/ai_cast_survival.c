@@ -1389,6 +1389,10 @@ void Survival_CheckWipe( void ) {
 	svParams.gameOverMsgRefreshTime = level.time;
 	svParams.gameOverFadeOutSent = qfalse;
 
+	// the outro force-draws the scoreboard; make sure every client has fresh score data for it
+	CalculateRanks();
+	SendScoreboardMessageToAllClients();
+
 	trap_SendServerCommand( -1, "cp \"^1GAME OVER\n^7All players have fallen\n\"" );
 
 	if ( survCfg.gameoverMusic[0] ) {
@@ -1396,15 +1400,13 @@ void Survival_CheckWipe( void ) {
 	}
 }
 
-// a client counts as "in the zone" if a trigger_exfil brush stamped it this recently (covers a couple of server frames / lag)
-#define EXFIL_STAMP_GRACE 300
+#define EXFIL_STAMP_GRACE 300   // ms since the last trigger_exfil touch to still count as "in the zone"
 
 /*
 ============
 Survival_ExfilPlayerHoldingZone
 
-  Connected, alive, non-spectator human whose exfilZoneTime was stamped within
-  the last EXFIL_STAMP_GRACE ms - i.e. standing in a trigger_exfil brush now.
+  Live, connected, non-spectator human standing in a trigger_exfil brush right now.
 ============
 */
 static qboolean Survival_ExfilPlayerHoldingZone( gentity_t *cl ) {
@@ -1415,7 +1417,7 @@ static qboolean Survival_ExfilPlayerHoldingZone( gentity_t *cl ) {
 		return qfalse;
 	}
 	if ( cl->health <= 0 ) {
-		return qfalse;   // downed/dead players don't hold the zone
+		return qfalse;
 	}
 	if ( !cl->client->exfilZoneTime || level.time - cl->client->exfilZoneTime > EXFIL_STAMP_GRACE ) {
 		return qfalse;
@@ -1427,8 +1429,7 @@ static qboolean Survival_ExfilPlayerHoldingZone( gentity_t *cl ) {
 ============
 Survival_BuildExfilBanner
 
-  Composes svParams.exfilBanner from whoever is holding a zone right now. Sent
-  as-is by Survival_TickGameOver during the ENDING_EXFIL sequence.
+  Builds svParams.exfilBanner (the "Successful Exfil!" text) from whoever is in a zone.
 ============
 */
 static void Survival_BuildExfilBanner( void ) {
@@ -1462,8 +1463,7 @@ static void Survival_BuildExfilBanner( void ) {
 ============
 Survival_BeginExfilEnding
 
-  Countdown reached zero: latch the survivors, hand off to the shared game-over
-  camera sequence (Survival_TickGameOver) with ENDING_EXFIL text/music.
+  Countdown hit zero - hand off to the shared game-over sequence with ENDING_EXFIL text/music.
 ============
 */
 static void Survival_BeginExfilEnding( void ) {
@@ -1471,7 +1471,7 @@ static void Survival_BeginExfilEnding( void ) {
 
 	svParams.endingType = ENDING_EXFIL;
 	svParams.exfilActive = qfalse;
-	svParams.waveGameOver = qtrue;   // stop wave logic + push any bleed-outs through before the restart
+	svParams.waveGameOver = qtrue;
 
 	svParams.gameOverPhase = GAMEOVER_PHASE_LINGER;
 	svParams.gameOverPhaseTime = level.time;
@@ -1481,6 +1481,10 @@ static void Survival_BeginExfilEnding( void ) {
 	svParams.gameOverFadeOutSent = qfalse;
 
 	Survival_GameManagerEvent( "exfil_complete" );
+
+	// the outro force-draws the scoreboard; make sure every client has fresh score data for it
+	CalculateRanks();
+	SendScoreboardMessageToAllClients();
 
 	trap_SendServerCommand( -1, va( "cp \"%s\n\"", svParams.exfilBanner ) );
 
@@ -1493,11 +1497,9 @@ static void Survival_BeginExfilEnding( void ) {
 ============
 Survival_TickExfil
 
-  GT_COOP_SURVIVAL only, once per server frame from G_RunFrame. Runs the
-  extraction countdown while the trigger_exfil zone is held; aborts and resets it
-  if the hold is lost; hands off to the shared game-over sequence when it
-  completes. "Held" means >= 1 player normally, or every active player if the
-  brush carried the ALLPLAYERS spawnflag.
+  Per-frame extraction countdown: runs while the trigger_exfil zone is held (>= 1 player,
+  or all active players with ALLPLAYERS), resets when the hold is lost, hands off to the
+  shared game-over sequence on completion. GT_COOP_SURVIVAL only.
 ============
 */
 void Survival_TickExfil( void ) {
@@ -1509,7 +1511,6 @@ void Survival_TickExfil( void ) {
 	if ( g_gametype.integer != GT_COOP_SURVIVAL ) {
 		return;
 	}
-	// an ending is already playing (wipe, or a completed exfil) - nothing to do
 	if ( svParams.endingType != ENDING_NONE || svParams.gameOverPhase != GAMEOVER_PHASE_NONE ) {
 		return;
 	}
@@ -1527,7 +1528,6 @@ void Survival_TickExfil( void ) {
 		needed = 1;
 	}
 
-	// zone empty - abort any running countdown and bail
 	if ( inZone == 0 ) {
 		if ( svParams.exfilActive ) {
 			svParams.exfilActive = qfalse;
@@ -1538,7 +1538,7 @@ void Survival_TickExfil( void ) {
 		return;
 	}
 
-	// ALLPLAYERS: someone's in the zone but not everyone - hold the countdown at bay (or drop it if it was running)
+	// ALLPLAYERS: some but not all present - stall (and drop a running countdown)
 	if ( inZone < needed ) {
 		if ( svParams.exfilActive ) {
 			svParams.exfilActive = qfalse;
@@ -1558,7 +1558,7 @@ void Survival_TickExfil( void ) {
 		svParams.exfilStartTime = level.time;
 		svParams.exfilCountdownShown = -1;
 		if ( svParams.exfilDuration < 1000 ) {
-			svParams.exfilDuration = 20000;   // defensive: brush "wait" was 0/negative
+			svParams.exfilDuration = 20000;
 		}
 		Survival_GameManagerEvent( "exfil_start" );
 	}
@@ -1703,6 +1703,7 @@ void Survival_TickGameOver( void ) {
 			} else {
 				trap_SendServerCommand( -1, "cp \"^1GAME OVER\n^7All players have fallen\n\"" );
 			}
+			SendScoreboardMessageToAllClients();   // keep the force-drawn scoreboard fed
 		}
 	}
 

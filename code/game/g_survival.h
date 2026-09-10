@@ -273,8 +273,7 @@ typedef struct svParams_s
 
 	qboolean waveGameOver;              // all players died mid-wave, game over triggered
 
-	// trigger_exfil extraction, see Survival_TickExfil(). endingType selects the text/music the
-	// shared game-over sequence plays; every other part of that sequence is common to both paths.
+	// trigger_exfil extraction (Survival_TickExfil); endingType picks the game-over sequence's text/music
 	endingType_t endingType;
 	qboolean exfilActive;              // extraction countdown currently running
 	qboolean exfilRequireAll;          // triggering brush had the ALLPLAYERS spawnflag - every active player must be in a zone
